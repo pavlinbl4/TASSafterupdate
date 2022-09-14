@@ -78,9 +78,9 @@ def write_to_main_file(photos, main_report, report_date):  # записываю 
     wb = load_workbook(filename=main_report, read_only=False)
     ws_month_number = wb.create_sheet(" ".join(report_date), 0)
 
-    ws_month_number.column_dimensions['A'].width = 40
-    ws_month_number.column_dimensions['B'].width = 40
-    ws_month_number.column_dimensions['C'].width = 20
+    ws_month_number.column_dimensions['A'].width = 30
+    ws_month_number.column_dimensions['B'].width = 30
+    ws_month_number.column_dimensions['C'].width = 10
 
     ws_month_number.cell(row=1, column=1).value = "photo_id"
     ws_month_number.cell(row=1, column=2).value = "income"
@@ -88,6 +88,10 @@ def write_to_main_file(photos, main_report, report_date):  # записываю 
 
     kkeys = [i for i in photos.keys()]
     for i in range(len(photos)):
+        ws_month_number.cell(row=2 + i, column=1).alignment = Alignment(horizontal='center')
+        ws_month_number.cell(row=2 + i, column=2).alignment = Alignment(horizontal='center')
+        ws_month_number.cell(row=2 + i, column=3).alignment = Alignment(horizontal='center')
+
         ws_month_number.cell(row=2 + i, column=1).value = kkeys[i]
         ws_month_number.cell(row=2 + i, column=2).value = sum(photos[kkeys[i]])  # суммирую доход по снимкам
         ws_month_number.cell(row=2 + i, column=3).value = len(photos[kkeys[i]])
