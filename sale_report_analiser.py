@@ -15,6 +15,8 @@ from selenium import webdriver
 import time
 import requests
 from selenium.webdriver.common.by import By
+from openpyxl.styles import Font, Color, Alignment
+from colorama import Fore
 
 report_dir = '/Volumes/big4photo/Downloads'
 destination = '/Volumes/big4photo/Documents/TASS/reports'  # расположение обработанных файлов отчетов
@@ -51,7 +53,7 @@ def get_prevue(file_to_work, report_date):
         browser.get('https://www.tassphoto.com/ru')
         time.sleep(3)
         photo_id = (sheet.cell(row=x, column=y)).value
-        print(photo_id)
+        print(f"{photo_id = } - зачем я это вывожу?")
         while photo_id != None:
             search_input = browser.find_element(By.ID, "userrequest")
             search_input.clear()
@@ -94,7 +96,7 @@ def write_to_main_file(photos, main_report, report_date):  # записываю 
         ws_month_number.cell(row=2 + i, column=3).value = len(photos[kkeys[i]])
     wb.save(main_report)
     wb.close()
-    print("информация записана")
+    print(Fore.RED +"файл отчета перенесен в нужную папку" + Fore.RESET)
 
 
 def add_information_to_main_file(file_to_work,
@@ -135,7 +137,7 @@ def move_and_rename(file_name, report_dir, destination):  # 2 переимено
         print('данный отчет уже обработан ранее')
         return
     file_to_work = shutil.move(f"{report_dir}/{file_name}", working_file)
-    print(f"обработан файл - {file_to_work}")  # главная переменная с которой дальше буду работать
+    print(f"обработан файл отчета - {file_to_work}")  # главная переменная с которой дальше буду работать
     add_information_to_main_file(file_to_work, report_date)
     get_prevue(file_to_work, report_date)
 
@@ -150,7 +152,7 @@ def find_report(report_dir,
             count += 1
             move_and_rename(file_name, report_dir, destination)
     if count == 0:
-        print('нет нужного файла')
+        print(Fore.RED +'нет нужного файла'+ Fore.RESET)
 
 
 find_report(report_dir, destination)
