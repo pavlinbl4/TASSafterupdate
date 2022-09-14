@@ -1,7 +1,7 @@
 """
 данный скрипт хорошо работает с современными отчетами тасс
 с 2015 года по 2022 включительно
-проверен 8 апреля 2022
+проверен 14 сентября 2022
 
 """
 
@@ -23,9 +23,6 @@ report_dir = '/Volumes/big4photo/Downloads'
 destination = '/Volumes/big4photo/Documents/TASS/reports'  # расположение обработанных файлов отчетов
 main_report = '/Volumes/big4photo/Documents/TASS/Tass_total_report_from_2015.xlsx'  # файл куда сохранятеся вся
 
-# options = webdriver.ChromeOptions()
-# options.add_argument(
-#     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4200.0 Iron Safari/537.36")
 
 
 def gen_x(sheet):  # функция определяет номер строки с которой начинается ввод данных в табицу
@@ -44,7 +41,6 @@ def gen_y(sheet):  # функция определяет номер строки
 
 def get_prevue(file_to_work, report_date):
     browser = webdriver.Chrome(options=setting_chrome_options())
-    # browser = webdriver.Chrome(options=options)
     os.makedirs(f"/Volumes/big4photo/Documents/TASS/images/{report_date[1]}/{' '.join(report_date)}", exist_ok=True)
     wb = openpyxl.load_workbook(file_to_work)
     sheet = wb.active
@@ -55,7 +51,6 @@ def get_prevue(file_to_work, report_date):
         browser.get('https://www.tassphoto.com/ru')
         time.sleep(3)
         photo_id = (sheet.cell(row=x, column=y)).value
-        print(f"{photo_id = } - зачем я это вывожу?")
         while photo_id != None:
             search_input = browser.find_element(By.ID, "userrequest")
             search_input.clear()
