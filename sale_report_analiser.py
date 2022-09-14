@@ -17,14 +17,15 @@ import requests
 from selenium.webdriver.common.by import By
 from openpyxl.styles import Font, Color, Alignment
 from colorama import Fore
+from crome_options import setting_chrome_options
 
 report_dir = '/Volumes/big4photo/Downloads'
 destination = '/Volumes/big4photo/Documents/TASS/reports'  # расположение обработанных файлов отчетов
 main_report = '/Volumes/big4photo/Documents/TASS/Tass_total_report_from_2015.xlsx'  # файл куда сохранятеся вся
 
-options = webdriver.ChromeOptions()
-options.add_argument(
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4200.0 Iron Safari/537.36")
+# options = webdriver.ChromeOptions()
+# options.add_argument(
+#     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4200.0 Iron Safari/537.36")
 
 
 def gen_x(sheet):  # функция определяет номер строки с которой начинается ввод данных в табицу
@@ -42,7 +43,8 @@ def gen_y(sheet):  # функция определяет номер строки
 
 
 def get_prevue(file_to_work, report_date):
-    browser = webdriver.Chrome(options=options)
+    browser = webdriver.Chrome(options=setting_chrome_options())
+    # browser = webdriver.Chrome(options=options)
     os.makedirs(f"/Volumes/big4photo/Documents/TASS/images/{report_date[1]}/{' '.join(report_date)}", exist_ok=True)
     wb = openpyxl.load_workbook(file_to_work)
     sheet = wb.active
