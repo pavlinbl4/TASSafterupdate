@@ -49,13 +49,15 @@ def get_prevue(file_to_work, report_date):
 
     try:
         browser.get('https://www.tassphoto.com/ru')
-        time.sleep(1)
+        time.sleep(3)
         photo_id = (sheet.cell(row=x, column=y)).value
+        print(photo_id)
         while photo_id != None:
             search_input = browser.find_element(By.ID, "userrequest")
             search_input.clear()
             search_input.send_keys(photo_id)
             browser.find_element(By.ID, "search-submit").click()
+            time.sleep(30)
             picture = browser.find_element(By.CSS_SELECTOR, "#mosaic .zoom img").get_attribute("src")
             print(picture)
             get_image = requests.get(picture)
@@ -76,6 +78,11 @@ def get_prevue(file_to_work, report_date):
 def write_to_main_file(photos, main_report, report_date):  # записываю информацию в главный файл
     wb = load_workbook(filename=main_report, read_only=False)
     ws_month_number = wb.create_sheet(" ".join(report_date), 0)
+
+    ws_month_number.column_dimensions['A'].width = 40
+    ws_month_number.column_dimensions['B'].width = 40
+    ws_month_number.column_dimensions['C'].width = 20
+
     ws_month_number.cell(row=1, column=1).value = "photo_id"
     ws_month_number.cell(row=1, column=2).value = "income"
     ws_month_number.cell(row=1, column=3).value = "sold times"
@@ -117,8 +124,9 @@ def get_report_date(file_name):  # получаю дату отчета в ви�
                 return sheet.cell(row=cell.row, column=cell.column + 1).value
 
 
-def move_and_rename(file_name, report_dir, destination):  # переименовываю и перемещаю файл отчета
+def move_and_rename(file_name, report_dir, destination):  # 2 переименовываю и перемещаю файл отчета
     report_date = get_report_date(file_name).split()  # список с датой отчета [месяц, год, мусор]
+    print(report_date)
     os.makedirs(f"{destination}/{report_date[1]}_отчеты", exist_ok=True)
     working_file = f"{destination}/{report_date[1]}_отчеты/Павленко_{report_date[0]}_{report_date[1]}.xlsx"
     if os.path.exists(
@@ -132,7 +140,8 @@ def move_and_rename(file_name, report_dir, destination):  # переименов
     get_prevue(file_to_work, report_date)
 
 
-def find_report(report_dir, destination):  # поск заданных файлов в папке загрузок
+def find_report(report_dir,
+                destination):  # 1 поиск заданных файлов в папке загрузок и  вызов функции переноса файла с переименованием его
     list_of_files = os.listdir(report_dir)
     pattern = 'Павленко*.xlsx'
     count = 0
@@ -145,3 +154,5 @@ def find_report(report_dir, destination):  # поск заданных файл�
 
 
 find_report(report_dir, destination)
+
+
