@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
+from crome_options import setting_chrome_options
 
 
 def main(html):
@@ -29,10 +30,7 @@ def main(html):
 
 
 def get_html():
-    options = webdriver.ChromeOptions()
-    options.add_argument(
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko)"
-        " Chrome/81.0.4200.0 Iron Safari/537.36")
+    options = setting_chrome_options()
     browser = webdriver.Chrome(options=options)
 
     browser.get('https://www.tassphoto.com/ru')
