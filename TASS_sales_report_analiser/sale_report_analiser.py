@@ -15,10 +15,11 @@ from selenium import webdriver
 import time
 import requests
 from selenium.webdriver.common.by import By
+from home_directory import subfolder_in_user_folder
 
-report_dir = '/Volumes/big4photo/Downloads'
-destination = '/Volumes/big4photo/Documents/TASS/reports'  # расположение обработанных файлов отчетов
-main_report = '/Volumes/big4photo/Documents/TASS/Tass_total_report_from_2015.xlsx'  # файл куда сохранятеся вся
+report_dir = subfolder_in_user_folder('Downloads')
+destination = f'{subfolder_in_user_folder("Documents")}/TASS/reports'  # расположение обработанных файлов отчетов
+main_report = f'{subfolder_in_user_folder("Documents")}/TASS/Tass_total_report_from_2015.xlsx'  # файл куда сохранятеся вся
 
 options = webdriver.ChromeOptions()
 options.add_argument(
