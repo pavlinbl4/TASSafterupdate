@@ -16,14 +16,12 @@ import time
 import requests
 from selenium.webdriver.common.by import By
 from home_directory import subfolder_in_user_folder
-
-report_dir = subfolder_in_user_folder('Downloads')
-destination = f'{subfolder_in_user_folder("Documents")}/TASS/reports'  # расположение обработанных файлов отчетов
-main_report = f'{subfolder_in_user_folder("Documents")}/TASS/Tass_total_report_from_2015.xlsx'  # файл куда сохранятеся вся
+from pathlib import Path
 
 options = webdriver.ChromeOptions()
 options.add_argument(
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4200.0 Iron Safari/537.36")
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4200.0 Iron Safari/537.36")
 
 
 def gen_x(sheet):  # функция определяет номер строки с которой начинается ввод данных в табицу
@@ -42,7 +40,8 @@ def gen_y(sheet):  # функция определяет номер строки
 
 def get_prevue(file_to_work, report_date):
     browser = webdriver.Chrome(options=options)
-    os.makedirs(f"/Volumes/big4photo/Documents/TASS/images/{report_date[1]}/{' '.join(report_date)}", exist_ok=True)
+    os.makedirs(f"{subfolder_in_user_folder('Documents')}/TASS/images/{report_date[1]}/{' '.join(report_date)}",
+                exist_ok=True)
     wb = openpyxl.load_workbook(file_to_work)
     sheet = wb.active
     x = gen_x(sheet)
@@ -52,7 +51,7 @@ def get_prevue(file_to_work, report_date):
         browser.get('https://www.tassphoto.com/ru')
         time.sleep(1)
         photo_id = (sheet.cell(row=x, column=y)).value
-        while photo_id != None:
+        while photo_id is not None:
             search_input = browser.find_element(By.ID, "userrequest")
             search_input.clear()
             search_input.send_keys(photo_id)
@@ -61,7 +60,8 @@ def get_prevue(file_to_work, report_date):
             print(picture)
             get_image = requests.get(picture)
             with open(
-                    f"/Volumes/big4photo/Documents/TASS/images/{report_date[1]}/{' '.join(report_date)}/{photo_id}.jpg",
+                    f"{subfolder_in_user_folder('Documents')}/TASS/images/{report_date[1]}"
+                    f"/{' '.join(report_date)}/{photo_id}.jpg",
                     'wb') as img_file:
                 img_file.write(get_image.content)
             x += 1
@@ -100,12 +100,14 @@ def add_information_to_main_file(file_to_work,
     y = gen_y(sheet)
     photo_id = (sheet.cell(row=x, column=y)).value
     money = float((sheet.cell(row=x, column=6)).value)
-    while photo_id != None:
+    while photo_id is not None:
         photos.setdefault(photo_id, [])
         photos[photo_id].append(round(money, 2))
         x += 1
         photo_id = (sheet.cell(row=x, column=y)).value
         money = (sheet.cell(row=x, column=6)).value
+    main_report = Path(f'{subfolder_in_user_folder("Documents")}/TASS/Tass_total_report_from_2015.xlsx')  # файл куда сохранятеся вся
+
     write_to_main_file(photos, main_report, report_date)
 
 
@@ -123,14 +125,12 @@ def move_and_rename(file_name, report_dir, destination):  # переименов
     os.makedirs(f"{destination}/{report_date[1]}_отчеты", exist_ok=True)
     working_file = f"{destination}/{report_date[1]}_отчеты/Павленко_{report_date[0]}_{report_date[1]}.xlsx"
     if os.path.exists(
-            working_file):  # надо вставить проверку на случай если файл отчета уже есть. то прекратить работу. удалив исходник
+            working_file):  # надо вставить проверку на случай
+        # если файл отчета уже есть. то прекратить работу. удалив исходник
         os.remove(f"{report_dir}/{file_name}")
         print('данный отчет уже обработан ранее')
         return
-    file_to_work = shutil.move(f"{report_dir}/{file_name}", working_file)
-    print(f"обработан файл - {file_to_work}")  # главная переменная с которой дальше буду работать
-    add_information_to_main_file(file_to_work, report_date)
-    get_prevue(file_to_work, report_date)
+    return shutil.move(f"{report_dir}/{file_name}", working_file), report_date  # file_to_work, report_date
 
 
 def find_report(report_dir, destination):  # поск заданных файлов в папке загрузок
@@ -140,9 +140,19 @@ def find_report(report_dir, destination):  # поск заданных файл�
     for file_name in list_of_files:
         if fnmatch.fnmatch(file_name, pattern):
             count += 1
-            move_and_rename(file_name, report_dir, destination)
+            file_to_work = move_and_rename(file_name, report_dir, destination)
+            return file_to_work
     if count == 0:
         print('нет нужного файла')
 
 
-find_report(report_dir, destination)
+if __name__ == '__main__':
+    report_dir = subfolder_in_user_folder('Downloads')
+    tass_folder = f'{subfolder_in_user_folder("Documents")}/TASS'
+    destination = f'{tass_folder}/reports'  # расположение обработанных файлов отчетов
+
+    file_to_work, report_date = find_report(report_dir, destination)
+
+    print(f"обработан файл - {file_to_work}")  # главная переменная с которой дальше буду работать
+    # add_information_to_main_file(file_to_work, report_date)
+    get_prevue(file_to_work, report_date)
