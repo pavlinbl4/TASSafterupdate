@@ -16,7 +16,7 @@ import time
 import requests
 from selenium.webdriver.common.by import By
 from home_directory import subfolder_in_user_folder
-from pathlib import Path
+from create_XLXS_report_file import create_report
 
 options = webdriver.ChromeOptions()
 options.add_argument(
@@ -93,6 +93,7 @@ def write_to_main_file(photos, main_report, report_date):  # записываю 
 
 def add_information_to_main_file(file_to_work,
                                  report_date):  # добавляю всю информацию из перенесенного файла отчета в основной файл
+
     wb = openpyxl.load_workbook(file_to_work)
     sheet = wb.active
     photos = {}  # словарь где ключ  id снимка , а значение список с цифрами покупок
@@ -106,12 +107,12 @@ def add_information_to_main_file(file_to_work,
         x += 1
         photo_id = (sheet.cell(row=x, column=y)).value
         money = (sheet.cell(row=x, column=6)).value
-    main_report = Path(f'{subfolder_in_user_folder("Documents")}/TASS/Tass_total_report_from_2015.xlsx')  # файл куда сохранятеся вся
+    main_report = create_report(report_date)
 
     write_to_main_file(photos, main_report, report_date)
 
 
-def get_report_date(file_name):  # получаю дату отчета в виде строки для новых отчетов точно с 2015
+def get_report_date(file_name, report_dir):  # получаю дату отчета в виде строки для новых отчетов точно с 2015
     wb = openpyxl.load_workbook(f"{report_dir}/{file_name}")
     sheet = wb.active
     for row in sheet.iter_rows():
@@ -121,7 +122,7 @@ def get_report_date(file_name):  # получаю дату отчета в ви�
 
 
 def move_and_rename(file_name, report_dir, destination):  # переименовываю и перемещаю файл отчета
-    report_date = get_report_date(file_name).split()  # список с датой отчета [месяц, год, мусор]
+    report_date = get_report_date(file_name, report_dir).split()  # список с датой отчета [месяц, год, мусор]
     os.makedirs(f"{destination}/{report_date[1]}_отчеты", exist_ok=True)
     working_file = f"{destination}/{report_date[1]}_отчеты/Павленко_{report_date[0]}_{report_date[1]}.xlsx"
     if os.path.exists(
@@ -146,7 +147,7 @@ def find_report(report_dir, destination):  # поск заданных файл�
         print('нет нужного файла')
 
 
-if __name__ == '__main__':
+def main():
     report_dir = subfolder_in_user_folder('Downloads')
     tass_folder = f'{subfolder_in_user_folder("Documents")}/TASS'
     destination = f'{tass_folder}/reports'  # расположение обработанных файлов отчетов
@@ -154,5 +155,10 @@ if __name__ == '__main__':
     file_to_work, report_date = find_report(report_dir, destination)
 
     print(f"обработан файл - {file_to_work}")  # главная переменная с которой дальше буду работать
-    # add_information_to_main_file(file_to_work, report_date)
+
+    add_information_to_main_file(file_to_work, report_date)
     get_prevue(file_to_work, report_date)
+
+
+if __name__ == '__main__':
+    main()
