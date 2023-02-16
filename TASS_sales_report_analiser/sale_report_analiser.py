@@ -130,7 +130,7 @@ def move_and_rename(file_name, report_dir, destination):  # переименов
         # если файл отчета уже есть. то прекратить работу. удалив исходник
         os.remove(f"{report_dir}/{file_name}")
         print('данный отчет уже обработан ранее')
-        return
+        exit()
     return shutil.move(f"{report_dir}/{file_name}", working_file), report_date  # file_to_work, report_date
 
 
@@ -144,7 +144,8 @@ def find_report(report_dir, destination):  # поск заданных файл�
             file_to_work = move_and_rename(file_name, report_dir, destination)
             return file_to_work
     if count == 0:
-        print('нет нужного файла')
+        print('В папке загрузки нет файла отчета')
+        exit()
 
 
 def main():
