@@ -1,12 +1,7 @@
 from openpyxl import load_workbook
 from openpyxl import Workbook
 import os
-from pathlib import Path
-
-
-def make_documents_subfolder(name):  # create folder "name" in User/Documents folder
-    (Path.home() / "Documents" / f"{name}").mkdir(parents=True, exist_ok=True)
-    return Path.home() / "Documents" / f"{name}"
+from must_have.make_documents_subfolder import make_documents_subfolder
 
 
 def create_report_file(report_folder, file_name, report_date):
@@ -35,7 +30,8 @@ def create_report_file(report_folder, file_name, report_date):
 
 
 def create_report(report_date):
-    return create_report_file(make_documents_subfolder("TASS"), "all_years_report",report_date)
+    return create_report_file(make_documents_subfolder("TASS"), "all_years_report", report_date)
+
 
 if __name__ == '__main__':
-    create_report(['январь','2023','года'])
+    create_report(['январь', '2023', 'года'])
