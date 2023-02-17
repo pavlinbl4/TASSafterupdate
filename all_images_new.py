@@ -21,8 +21,7 @@ options = setting_chrome_options()
 
 browser = webdriver.Chrome(options=options)
 
-
-def get_html(link):
+def first_enter():
     browser.get('https://www.tassphoto.com/ru')
     WebDriverWait(browser, 10).until(
         ec.presence_of_element_located((By.ID, "userrequest"))
@@ -31,6 +30,9 @@ def get_html(link):
     search_input.clear()
     search_input.send_keys('Семен Лиходеев')
     search_input.send_keys(Keys.ENTER)
+
+
+def get_html(link):
     browser.get(link)
     html = browser.page_source
     return html
@@ -114,6 +116,7 @@ url = 'https://www.tassphoto.com/ru/asset/fullTextSearch/search/' \
 
 if __name__ == '__main__':
     report_folder = make_documents_subfolder('TASS/Tass_data')
+    first_enter()
     check_all_images()
     browser.close()
     browser.quit()
