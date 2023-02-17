@@ -6,4 +6,4 @@ def subfolder_in_user_folder(subfolder):
 
 
 if __name__ == '__main__':
-    print(subfolder_in_user_folder("Downloads"))
+    print(subfolder_in_user_folder("Downloads/RRRRRRR"))
