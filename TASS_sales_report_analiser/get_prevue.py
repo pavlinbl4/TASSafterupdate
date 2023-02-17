@@ -27,7 +27,7 @@ def get_prevue(file_to_work, report_date):
             search_input.clear()
             search_input.send_keys(photo_id)
             browser.find_element(By.ID, "search-submit").click()
-            picture = browser.find_element(By.CSS_SELECTOR, "#mosaic .zoom img").get_attribute("src")
+            picture = browser.find_element(By.CSS_SELECTOR, f"img.thumb{photo_id}").get_attribute("src")
             print(picture)
             get_image = requests.get(picture)
             with open(
@@ -47,5 +47,5 @@ def get_prevue(file_to_work, report_date):
 
 if __name__ == '__main__':
 
-    get_prevue('/Users/evgeniy/Documents/TASS/reports/2023_отчеты/Павленко_январь_2023.xlsx',
+    get_prevue('/Users/evgeniy/Documents/TASS/reports/2023_отчеты/test_report.xlsx',
                 ['month_name','YYEAR', 'года'])
