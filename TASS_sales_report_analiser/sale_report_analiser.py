@@ -15,13 +15,12 @@ from selenium import webdriver
 import time
 import requests
 from selenium.webdriver.common.by import By
+
+from TASS_sales_report_analiser.crome_options import setting_chrome_options
 from home_directory import subfolder_in_user_folder
 from create_XLXS_report_file import create_report
+# from get_prevue import get_prevue
 
-options = webdriver.ChromeOptions()
-options.add_argument(
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4200.0 Iron Safari/537.36")
 
 
 def gen_x(sheet):  # функция определяет номер строки с которой начинается ввод данных в табицу
@@ -39,7 +38,7 @@ def gen_y(sheet):  # функция определяет номер строки
 
 
 def get_prevue(file_to_work, report_date):
-    browser = webdriver.Chrome(options=options)
+    browser = webdriver.Chrome(options=setting_chrome_options())
     os.makedirs(f"{subfolder_in_user_folder('Documents')}/TASS/images/{report_date[1]}/{' '.join(report_date)}",
                 exist_ok=True)
     wb = openpyxl.load_workbook(file_to_work)
@@ -56,7 +55,7 @@ def get_prevue(file_to_work, report_date):
             search_input.clear()
             search_input.send_keys(photo_id)
             browser.find_element(By.ID, "search-submit").click()
-            picture = browser.find_element(By.CSS_SELECTOR, "#mosaic .zoom img").get_attribute("src")
+            picture = browser.find_element(By.CSS_SELECTOR, f"img.thumb{photo_id}").get_attribute("src")
             print(picture)
             get_image = requests.get(picture)
             with open(
