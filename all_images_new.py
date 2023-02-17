@@ -13,7 +13,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
-from crome_options import setting_chrome_options
+
+from must_have.crome_options import setting_chrome_options
+from must_have.make_documents_subfolder import make_documents_subfolder
 
 options = setting_chrome_options()
 
@@ -110,9 +112,8 @@ def check_all_images():  # 1. start to check images
 url = 'https://www.tassphoto.com/ru/asset/fullTextSearch/search/' \
       '%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%20%D0%9B%D0%B8%D1%85%D0%BE%D0%B4%D0%B5%D0%B5%D0%B2/page/'
 
-report_folder = "/Volumes/big4photo/Documents/TASS/Tass_data"
-
 if __name__ == '__main__':
+    report_folder = make_documents_subfolder('TASS/Tass_data')
     check_all_images()
     browser.close()
     browser.quit()
