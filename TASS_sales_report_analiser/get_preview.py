@@ -20,12 +20,13 @@ def get_preview(file_to_work, report_date):
 
     try:
         browser.get('https://www.tassphoto.com/ru')
-        time.sleep(1)
+        time.sleep(3)
         photo_id = (sheet.cell(row=x, column=y)).value
         while photo_id is not None:
-            search_input = browser.find_element(By.ID, "userrequest")
-            search_input.clear()
-            search_input.send_keys(photo_id)
+            # search_input = browser.find_element(By.ID, "userrequest")
+            # search_input.clear()
+            # search_input.send_keys(photo_id)
+            browser.get(f'https://www.tassphoto.com/ru/asset/fullTextSearch/search/{photo_id}/page/1')
             browser.find_element(By.ID, "search-submit").click()
             picture = browser.find_element(By.CSS_SELECTOR, f"img.thumb{photo_id}").get_attribute("src")
             print(picture)
@@ -46,4 +47,5 @@ def get_preview(file_to_work, report_date):
 
 
 if __name__ == '__main__':
-    get_preview('/Volumes/big4photo/Documents/TASS/reports/2015_отчеты/Павленко_август_2015.xlsx', ['month_name', 'YYEAR', 'года'])
+    get_preview('/Users/evgeniy/Documents/TASS/reports/2023_отчеты/Павленко_январь_2023.xlsx',
+                ['month_name', 'YYEAR', 'года'])
