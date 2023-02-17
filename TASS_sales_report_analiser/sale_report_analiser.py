@@ -1,76 +1,14 @@
-"""
-данный скрипт хорошо работает с современными отчетами тасс
-с 2015 года по 2022 включительно
-проверен 8 апреля 2022
-
-"""
-
 import os
 import fnmatch
 import os.path
 import shutil
 import openpyxl
 from openpyxl import load_workbook
-from selenium import webdriver
-import time
-import requests
-from selenium.webdriver.common.by import By
-
-from TASS_sales_report_analiser.crome_options import setting_chrome_options
+from get_preview import get_preview
 from home_directory import subfolder_in_user_folder
 from create_XLXS_report_file import create_report
-# from get_prevue import get_prevue
+from read_XLSX_report import gen_x, gen_y
 
-
-
-def gen_x(sheet):  # функция определяет номер строки с которой начинается ввод данных в табицу
-    for row in sheet.iter_rows():
-        for cell in row:
-            if cell.value == 'компания' or cell.value == 'Компания':
-                return cell.row + 1
-
-
-def gen_y(sheet):  # функция определяет номер строки с которой начинается ввод данных в таблицу
-    for row in sheet.iter_rows():
-        for cell in row:
-            if cell.value == 'ID фото ' or cell.value == 'ID фото':
-                return cell.column
-
-
-def get_prevue(file_to_work, report_date):
-    browser = webdriver.Chrome(options=setting_chrome_options())
-    os.makedirs(f"{subfolder_in_user_folder('Documents')}/TASS/images/{report_date[1]}/{' '.join(report_date)}",
-                exist_ok=True)
-    wb = openpyxl.load_workbook(file_to_work)
-    sheet = wb.active
-    x = gen_x(sheet)
-    y = gen_y(sheet)
-
-    try:
-        browser.get('https://www.tassphoto.com/ru')
-        time.sleep(1)
-        photo_id = (sheet.cell(row=x, column=y)).value
-        while photo_id is not None:
-            search_input = browser.find_element(By.ID, "userrequest")
-            search_input.clear()
-            search_input.send_keys(photo_id)
-            browser.find_element(By.ID, "search-submit").click()
-            picture = browser.find_element(By.CSS_SELECTOR, f"img.thumb{photo_id}").get_attribute("src")
-            print(picture)
-            get_image = requests.get(picture)
-            with open(
-                    f"{subfolder_in_user_folder('Documents')}/TASS/images/{report_date[1]}"
-                    f"/{' '.join(report_date)}/{photo_id}.jpg",
-                    'wb') as img_file:
-                img_file.write(get_image.content)
-            x += 1
-            photo_id = (sheet.cell(row=x, column=y)).value
-    except Exception as ex:
-        print(ex)
-        browser.close()
-        browser.quit()
-    browser.close()
-    browser.quit()
 
 
 def write_to_main_file(photos, main_report, report_date):  # записываю информацию в главный файл
@@ -157,7 +95,7 @@ def main():
     print(f"обработан файл - {file_to_work}")  # главная переменная с которой дальше буду работать
 
     add_information_to_main_file(file_to_work, report_date)
-    get_prevue(file_to_work, report_date)
+    get_preview(file_to_work, report_date)
 
 
 if __name__ == '__main__':
