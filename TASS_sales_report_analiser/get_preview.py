@@ -4,12 +4,12 @@ from selenium import webdriver
 import openpyxl
 import requests
 from selenium.webdriver.common.by import By
-from TASS_sales_report_analiser.home_directory import subfolder_in_user_folder
-from TASS_sales_report_analiser.sale_report_analiser import gen_x, gen_y
+from home_directory import subfolder_in_user_folder
+from read_XLSX_report import gen_x, gen_y
 from crome_options import setting_chrome_options
 
 
-def get_prevue(file_to_work, report_date):
+def get_preview(file_to_work, report_date):
     browser = webdriver.Chrome(options=setting_chrome_options())
     os.makedirs(f"{subfolder_in_user_folder('Documents')}/TASS/images/{report_date[1]}/{' '.join(report_date)}",
                 exist_ok=True)
@@ -46,6 +46,4 @@ def get_prevue(file_to_work, report_date):
 
 
 if __name__ == '__main__':
-
-    get_prevue('/Users/evgeniy/Documents/TASS/reports/2023_отчеты/test_report.xlsx',
-                ['month_name','YYEAR', 'года'])
+    get_preview('/Volumes/big4photo/Documents/TASS/reports/2015_отчеты/Павленко_август_2015.xlsx', ['month_name', 'YYEAR', 'года'])
