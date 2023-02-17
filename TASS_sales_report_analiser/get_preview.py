@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as ec
 
 def get_preview(file_to_work, report_date):
     browser = webdriver.Chrome(options=setting_chrome_options())
-    os.makedirs(f"{subfolder_in_user_folder('Documents')}/TASS/images/{report_date[1]}/{' '.join(report_date)}",
+    os.makedirs(f"{subfolder_in_user_folder('Documents')}/TASS/reports/images/{report_date[1]}/{' '.join(report_date)}",
                 exist_ok=True)
     wb = openpyxl.load_workbook(file_to_work)
     sheet = wb.active
@@ -39,7 +39,7 @@ def get_preview(file_to_work, report_date):
             print(picture)
             get_image = requests.get(picture)
             with open(
-                    f"{subfolder_in_user_folder('Documents')}/TASS/images/{report_date[1]}"
+                    f"{subfolder_in_user_folder('Documents')}/TASS/reports/images/{report_date[1]}"
                     f"/{' '.join(report_date)}/{photo_id}.jpg",
                     'wb') as img_file:
                 img_file.write(get_image.content)
