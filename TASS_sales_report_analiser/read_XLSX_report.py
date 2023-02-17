@@ -10,4 +10,3 @@ def gen_y(sheet):  # функция определяет номер строки
         for cell in row:
             if cell.value == 'ID фото ' or cell.value == 'ID фото':
                 return cell.column
-
