@@ -7,6 +7,8 @@ from selenium.webdriver.common.by import By
 from home_directory import subfolder_in_user_folder
 from read_XLSX_report import gen_x, gen_y
 from crome_options import setting_chrome_options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
 
 
 def get_preview(file_to_work, report_date):
@@ -20,14 +22,21 @@ def get_preview(file_to_work, report_date):
 
     try:
         browser.get('https://www.tassphoto.com/ru')
-        time.sleep(3)
+        # time.sleep(3)
+        WebDriverWait(browser, 10).until(
+            ec.presence_of_element_located((By.ID, "userrequest"))
+        )
         photo_id = (sheet.cell(row=x, column=y)).value
         while photo_id is not None:
             # search_input = browser.find_element(By.ID, "userrequest")
             # search_input.clear()
             # search_input.send_keys(photo_id)
             browser.get(f'https://www.tassphoto.com/ru/asset/fullTextSearch/search/{photo_id}/page/1')
-            browser.find_element(By.ID, "search-submit").click()
+            # browser.find_element(By.ID, "search-submit").click()
+            WebDriverWait(browser, 10).until(
+                ec.presence_of_element_located((By.ID, "userrequest"))
+            )
+
             picture = browser.find_element(By.CSS_SELECTOR, f"img.thumb{photo_id}").get_attribute("src")
             print(picture)
             get_image = requests.get(picture)
