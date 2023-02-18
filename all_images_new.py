@@ -1,8 +1,3 @@
-"""
-скрипт собирающий информацию о всех моих фотографиях в агенстве ТАСС
-и сохраняющий эту информацию на отдельной вкладке xlsx файла в соответствии с датой запуска
-"""
-
 import os
 from openpyxl import Workbook
 from openpyxl import load_workbook
@@ -13,13 +8,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
-
 from must_have.crome_options import setting_chrome_options
 from must_have.make_documents_subfolder import make_documents_subfolder
 
-options = setting_chrome_options()
+browser = webdriver.Chrome(options=setting_chrome_options())
 
-browser = webdriver.Chrome(options=options)
 
 def first_enter():
     browser.get('https://www.tassphoto.com/ru')
@@ -43,7 +36,7 @@ def get_soup(html):
     return soup
 
 
-def get_page_numbers():  # get number of images on site
+def get_page_numbers(url):  # get number of images on site
     soup = get_soup(get_html(f'{url}1'))
     images_online = int(str(soup.select(".result-counter#nb-result"))[42:47])
     page_number = images_online // 20 + 1
@@ -79,7 +72,10 @@ def create_xlsx():
 
 
 def check_all_images():  # 1. start to check images
-    page_number, images_online = get_page_numbers()  # 2. get number of images on site
+    url = 'https://www.tassphoto.com/ru/asset/fullTextSearch/search/' \
+          '%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%20%D0%9B%D0%B8%D1%85%D0%BE%D0%B4%D0%B5%D0%B5%D0%B2/page/'
+
+    page_number, images_online = get_page_numbers(url)  # 2. get number of images on site
     ws, wb = create_xlsx()
     count = 1
     for n in range(1, page_number + 1):  # количество страниц для анализа  - page_number + 1
@@ -110,9 +106,6 @@ def check_all_images():  # 1. start to check images
     wb.save(f'{report_folder}/all_TASS_images.xlsx')
     wb.close()
 
-
-url = 'https://www.tassphoto.com/ru/asset/fullTextSearch/search/' \
-      '%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%20%D0%9B%D0%B8%D1%85%D0%BE%D0%B4%D0%B5%D0%B5%D0%B2/page/'
 
 if __name__ == '__main__':
     report_folder = make_documents_subfolder('TASS/Tass_data')
