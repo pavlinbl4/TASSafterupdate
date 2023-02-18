@@ -6,9 +6,8 @@ import openpyxl
 from openpyxl import load_workbook
 from get_preview import get_preview
 from must_have.home_directory import subfolder_in_user_folder
-from create_XLXS_report_file import create_report
-from read_XLSX_report import gen_x, gen_y
-
+from xlsx_tools.create_XLXS_report_file import create_report
+from xlsx_tools.read_XLSX_report import gen_x, gen_y
 
 
 def write_to_main_file(photos, main_report, report_date):  # записываю информацию в главный файл
