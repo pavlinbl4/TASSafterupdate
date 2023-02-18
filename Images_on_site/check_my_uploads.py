@@ -10,7 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.keys import Keys
 import os
-from openpyxl import Workbook
+
 import pandas as pd
 import requests
 import re
@@ -19,19 +19,12 @@ from must_have.notification import notification
 from must_have.crome_options import setting_chrome_options
 from must_have.make_documents_subfolder import make_documents_subfolder
 from must_have.soup import get_soup
+from xlsx_tools.create_all_TASS_images import create_xlsx
 
 browser = webdriver.Chrome(options=setting_chrome_options())
 
 url = 'https://www.tassphoto.com/ru/asset/fullTextSearch/search/' \
       '%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%20%D0%9B%D0%B8%D1%85%D0%BE%D0%B4%D0%B5%D0%B5%D0%B2/page/'
-
-
-def create_columns_names(ws):
-    ws[f'A1'] = 'images_online'
-    ws[f'B1'] = 'image_id'
-    ws[f'C1'] = 'image_date'
-    ws[f'D1'] = 'image_caption'
-    ws[f'E1'] = 'image_link'
 
 
 def image_downloader(difference, last_date):
@@ -58,28 +51,8 @@ def new_pictures_links(last_date, previous_date):
     return difference
 
 
-def create_xlsx():
-    today = datetime.now().strftime("%Y-%m-%d")
-    if os.path.exists(f'{report_folder}/all_TASS_images.xlsx'):
-        wb = load_workbook(f'{report_folder}/all_TASS_images.xlsx')  # файл есть и открываю его
-        ws = wb.create_sheet(today)  # добавляю новую таблицу
-        create_columns_names(ws)
-    else:
-        wb = Workbook()  # если файда еще нет
-        ws = wb.active  # если файда еще нет
-        ws.title = today  # если файда еще нет
-        create_columns_names(ws)
-
-    ws.column_dimensions['A'].width = 5
-    ws.column_dimensions['B'].width = 10
-    ws.column_dimensions['C'].width = 10  # задаю ширину колонки
-    ws.column_dimensions['D'].width = 110
-    ws.column_dimensions['E'].width = 50
-    return ws, wb
-
-
 def check_all_images(page_number, images_online):  # 1. start to check images
-    ws, wb = create_xlsx()
+    ws, wb = create_xlsx(report_folder)
     count = 1
     for n in range(1, page_number + 1):  # количество страниц для анализа  - page_number + 1
         link = f'{url}{n}'

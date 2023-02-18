@@ -1,7 +1,3 @@
-import os
-from openpyxl import Workbook
-from openpyxl import load_workbook
-from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -31,11 +27,6 @@ def get_html(link):
     return html
 
 
-# def get_soup(html):
-#     soup = BeautifulSoup(html, 'lxml')
-#     return soup
-
-
 def get_page_numbers(url):  # get number of images on site
     soup = get_soup(get_html(f'{url}1'))
     images_online = int(str(soup.select(".result-counter#nb-result"))[42:47])
@@ -43,40 +34,13 @@ def get_page_numbers(url):  # get number of images on site
     return page_number, images_online
 
 
-def create_columns_names(ws):
-    ws[f'A1'] = 'images_online'
-    ws[f'B1'] = 'image_id'
-    ws[f'C1'] = 'image_date'
-    ws[f'D1'] = 'image_caption'
-    ws[f'E1'] = 'image_link'
-
-
-def create_xlsx():
-    today = datetime.now().strftime("%Y-%m-%d")
-    if os.path.exists(f'{report_folder}/all_TASS_images.xlsx'):
-        wb = load_workbook(f'{report_folder}/all_TASS_images.xlsx')  # файл есть и открываю его
-        ws = wb.create_sheet(today)  # добавляю новую таблицу
-        create_columns_names(ws)
-    else:
-        wb = Workbook()  # если файда еще нет
-        ws = wb.active  # если файда еще нет
-        ws.title = today  # если файда еще нет
-        create_columns_names(ws)
-
-    ws.column_dimensions['A'].width = 5
-    ws.column_dimensions['B'].width = 10
-    ws.column_dimensions['C'].width = 10  # задаю ширину колонки
-    ws.column_dimensions['D'].width = 110
-    ws.column_dimensions['E'].width = 50
-    return ws, wb
-
-
 def check_all_images():  # 1. start to check images
     url = 'https://www.tassphoto.com/ru/asset/fullTextSearch/search/' \
           '%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%20%D0%9B%D0%B8%D1%85%D0%BE%D0%B4%D0%B5%D0%B5%D0%B2/page/'
 
     page_number, images_online = get_page_numbers(url)  # 2. get number of images on site
-    ws, wb = create_xlsx()
+    from xlsx_tools.create_all_TASS_images import create_xlsx
+    ws, wb = create_xlsx(report_folder)
     count = 1
     for n in range(1, page_number + 1):  # количество страниц для анализа  - page_number + 1
         link = f'{url}{n}'
