@@ -9,34 +9,21 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.keys import Keys
-from bs4 import BeautifulSoup
 import os
 from openpyxl import Workbook
 import pandas as pd
 import requests
 import re
 import datacompy
+from must_have.notification import notification
+from must_have.crome_options import setting_chrome_options
+from must_have.make_documents_subfolder import make_documents_subfolder
+from must_have.soup import get_soup
 
-options = webdriver.ChromeOptions()
-options.headless = True  # фоновый режим
-options.add_argument(
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/"
-    "537.36 (KHTML, like Gecko) Chrome/81.0.4200.0 Iron Safari/537.36")
-options.add_argument("--disable-blink-features=AutomationControlled")
-
-browser = webdriver.Chrome(options=options)
+browser = webdriver.Chrome(options=setting_chrome_options())
 
 url = 'https://www.tassphoto.com/ru/asset/fullTextSearch/search/' \
       '%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%20%D0%9B%D0%B8%D1%85%D0%BE%D0%B4%D0%B5%D0%B5%D0%B2/page/'
-report_folder = "/Volumes/big4photo/Documents/TASS/Tass_data"
-
-
-def notification(message):
-    title = "TASS info"
-    command = f'''
-    osascript -e 'display notification "{message}" with title "{title}"'
-    '''
-    os.system(command)
 
 
 def create_columns_names(ws):
@@ -48,7 +35,7 @@ def create_columns_names(ws):
 
 
 def image_downloader(difference, last_date):
-    folder = '/Volumes/big4photo/Documents/TASS/Tass_data/added_images'
+    folder = f'{report_folder}/added_images'
     os.makedirs(f"{folder}/{last_date}", exist_ok=True)
     for i in range(len(difference)):
         image_url = difference.image_link.iloc[i]
@@ -62,7 +49,7 @@ def image_downloader(difference, last_date):
 
 def new_pictures_links(last_date, previous_date):
     pd.options.display.max_colwidth = 100
-    photo_base = '/Volumes/big4photo/Documents/TASS/Tass_data/all_TASS_images.xlsx'
+    photo_base = f'{report_folder}/all_TASS_images.xlsx'
     last_df = pd.read_excel(photo_base, sheet_name=last_date)
     previos_df = pd.read_excel(photo_base, sheet_name=previous_date)
     difference = datacompy.Compare(previos_df, last_df,
@@ -103,14 +90,9 @@ def check_all_images(page_number, images_online):  # 1. start to check images
             count += 1
             image_date = thumbs_data[i].find(class_="date").text
             image_id = thumbs_data[i].find(class_="title").text
-            image_title = thumbs_data[i].find('p').text
             image_caption = soup.find('ul', id="mosaic").find_all(class_="thumb-text")[i].text.strip().split('\n')[
                 -1].lstrip().replace(' Семен Лиходеев/ТАСС', '').replace(' Фото ИТАР-ТАСС/ Семен Лиходеев', '')
             image_link = soup.find('ul', id="mosaic").find_all('a', class_="zoom")[i].find('img').get('src')
-            # print(count - 1, image_id, image_date)
-            # print(image_title)
-            # print(image_caption)
-            # print(image_link)
             ws[f'A{count}'] = images_online + 1 - count
             ws[f'B{count}'] = image_id
             ws[f'C{count}'] = image_date
@@ -118,11 +100,6 @@ def check_all_images(page_number, images_online):  # 1. start to check images
             ws[f'E{count}'] = image_link
     wb.save(f'{report_folder}/all_TASS_images.xlsx')
     wb.close()
-
-
-def get_soup(html):
-    soup = BeautifulSoup(html, 'lxml')
-    return soup
 
 
 def get_html(link):
@@ -148,20 +125,18 @@ def get_page_numbers():  # get number of images on site
 
 def add_data():  # function check number of images
     page_number, images_online = get_page_numbers()
-    # print(f'{images_online = }')
-    file = "/Volumes/big4photo/Documents/TASS/Tass_data/TASS_photos.xlsx"
+    file = f"{report_folder}/TASS_photos.xlsx"
     book = load_workbook(file)
     ws = book.active
     last_row = ws.max_row
     old_value = ws.cell(row=last_row, column=2).value  # последние данные в таблице
-    # print(f'date of last row {ws.cell(row=last_row, column=1).value[:10]} - images {old_value}')
     if ws.cell(row=last_row, column=2).value != images_online:
         ws.cell(row=last_row + 1, column=2).value = images_online
         ws.cell(row=last_row + 1, column=1).value = datetime.now().strftime('%Y-%m-%d %H:%M')
         new_images = int(images_online) - int(old_value)  # количество добавленных фото
         ws.cell(row=last_row + 1, column=3).value = new_images
         print(f'добавлено {new_images} снимков')
-        notification(f'добавлено\n{new_images}\nснимков')
+        notification(f'добавлено\n{new_images}\nснимков', "TASS info")
         book.save(file)
         book.close()
 
@@ -174,7 +149,6 @@ def add_data():  # function check number of images
         last_date = f'{ws.cell(row=last_row, column=1).value[:10]}'
         print(f"{last_date = }")
         previous_date = f'{ws.cell(row=(last_row - 1), column=1).value[:10]}'
-        # print(f"{previous_date = }")
 
         difference = new_pictures_links(last_date,
                                         previous_date)  # вызываю функцию и получаю датафрэйм с новыми фото
@@ -183,11 +157,13 @@ def add_data():  # function check number of images
 
     else:
         print(f"no new images, now  {images_online} - images online")
-        notification(f"no new images\n{images_online}\nimages online")
+        notification(f"no new images\n{images_online}\nimages online", "TASS info")
 
     book.save(file)
     book.close()
     print("work completed")
 
 
-add_data()
+if __name__ == '__main__':
+    report_folder = make_documents_subfolder('TASS/Tass_data')
+    add_data()

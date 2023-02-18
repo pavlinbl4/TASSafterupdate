@@ -7,9 +7,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.keys import Keys
-from bs4 import BeautifulSoup
 from must_have.crome_options import setting_chrome_options
 from must_have.make_documents_subfolder import make_documents_subfolder
+from must_have.soup import get_soup
 
 browser = webdriver.Chrome(options=setting_chrome_options())
 
@@ -31,9 +31,9 @@ def get_html(link):
     return html
 
 
-def get_soup(html):
-    soup = BeautifulSoup(html, 'lxml')
-    return soup
+# def get_soup(html):
+#     soup = BeautifulSoup(html, 'lxml')
+#     return soup
 
 
 def get_page_numbers(url):  # get number of images on site
