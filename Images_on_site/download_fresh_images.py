@@ -10,10 +10,11 @@ import os
 import requests
 import re
 from openpyxl import load_workbook
+from must_have.make_documents_subfolder import make_documents_subfolder
 
 
 def add_data():  # из таблицы получаю дату из последней и предыдущей строки
-    file = "/Volumes/big4photo/Documents/TASS/Tass_data/TASS_photos.xlsx"
+    file = f"{report_folder}/TASS_photos.xlsx"
     book = load_workbook(file)
     ws = book.active
     last_row = ws.max_row
@@ -27,7 +28,7 @@ def add_data():  # из таблицы получаю дату из послед
 
 
 def image_downloader(difference, last_date):
-    folder = '/Volumes/big4photo/Documents/TASS/Tass_data/added_images'
+    folder = f'[{report_folder}]/added_images'
     os.makedirs(f"{folder}/{last_date}", exist_ok=True)
     for i in range(len(difference)):
         image_url = difference.image_link.iloc[i]
@@ -41,7 +42,7 @@ def image_downloader(difference, last_date):
 
 def new_pictures_links(last_date, previous_date):
     pd.options.display.max_colwidth = 100
-    photo_base = '/Volumes/big4photo/Documents/TASS/Tass_data/all_TASS_images.xlsx'
+    photo_base = f'{report_folder}/all_TASS_images.xlsx'
     last_df = pd.read_excel(photo_base, sheet_name=last_date)
     previos_df = pd.read_excel(photo_base, sheet_name=previous_date)
     difference = datacompy.Compare(previos_df, last_df,
@@ -51,4 +52,5 @@ def new_pictures_links(last_date, previous_date):
 
 
 if __name__ == "__main__":
+    report_folder = make_documents_subfolder('TASS/Tass_data')
     add_data()
