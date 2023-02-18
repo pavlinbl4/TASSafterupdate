@@ -4,7 +4,7 @@ import openpyxl
 import requests
 from selenium.webdriver.common.by import By
 from must_have.home_directory import subfolder_in_user_folder
-from read_XLSX_report import gen_x, gen_y
+from xlsx_tools.read_XLSX_report import gen_x, gen_y
 from must_have.crome_options import setting_chrome_options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
@@ -26,11 +26,7 @@ def get_preview(file_to_work, report_date):
         )
         photo_id = (sheet.cell(row=x, column=y)).value
         while photo_id is not None:
-            # search_input = browser.find_element(By.ID, "userrequest")
-            # search_input.clear()
-            # search_input.send_keys(photo_id)
             browser.get(f'https://www.tassphoto.com/ru/asset/fullTextSearch/search/{photo_id}/page/1')
-            # browser.find_element(By.ID, "search-submit").click()
             WebDriverWait(browser, 10).until(
                 ec.presence_of_element_located((By.ID, "userrequest"))
             )
