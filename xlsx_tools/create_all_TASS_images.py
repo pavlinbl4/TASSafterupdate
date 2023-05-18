@@ -15,7 +15,8 @@ def create_columns_names(ws):
 def create_xlsx(report_folder):
     today = datetime.now().strftime("%Y-%m-%d")
     if os.path.exists(f'{report_folder}/all_TASS_images.xlsx'):
-        wb = load_workbook(f'{report_folder}/all_TASS_images.xlsx')  # файл есть и открываю его
+        wb = load_workbook(
+            f'{report_folder}/all_TASS_images.xlsx')  # файл есть и открываю его - too long to open big old file
         ws = wb.create_sheet(today)  # добавляю новую таблицу
         create_columns_names(ws)
     else:
