@@ -1,4 +1,4 @@
-"""проверяю, добавили ли мои фото на сайт, скрипт отрабатывает по crontab и
+"""Проверяю, добавили ли мои фото на сайт, скрипт отрабатывает по crontab и
  заносит информацию в таблицу, если количество снимков изменилось, то запускаю скрипт
  all_images_new и потом добавляет свежие снимки в заданную папку """
 
@@ -15,6 +15,8 @@ import pandas as pd
 import requests
 import re
 import datacompy
+
+from Images_on_site.count_images import get_page_numbers
 from must_have.notification import notification
 from must_have.crome_options import setting_chrome_options
 from must_have.make_documents_subfolder import make_documents_subfolder
@@ -89,15 +91,15 @@ def get_html(link):
     return html
 
 
-def get_page_numbers():  # get number of images on site
-    soup = get_soup(get_html(f'{url}1'))
-    images_online = int(str(soup.select(".result-counter#nb-result"))[42:47])
-    page_number = images_online // 20 + 1
-    return page_number, images_online
+# def get_page_numbers():  # get number of images on site
+#     soup = get_soup(get_html(f'{url}1'))
+#     images_online = int(str(soup.select(".result-counter#nb-result"))[42:47])
+#     page_number = images_online // 20 + 1
+#     return page_number, images_online
 
 
 def add_data():  # function check number of images
-    page_number, images_online = get_page_numbers()
+    page_number, images_online = get_page_numbers(url)  # get information about images online
     file = f"{report_folder}/TASS_photos.xlsx"
     book = load_workbook(file)
     ws = book.active
@@ -114,6 +116,8 @@ def add_data():  # function check number of images
         book.close()
 
         check_all_images(page_number, images_online)  # create new sheet with images on site
+
+
 
         # dates of last and previous images update
         book = load_workbook(file)
@@ -135,6 +139,8 @@ def add_data():  # function check number of images
     book.save(file)
     book.close()
     print("work completed")
+    browser.close()
+    browser.quit()
 
 
 if __name__ == '__main__':
