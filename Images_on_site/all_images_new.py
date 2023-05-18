@@ -3,9 +3,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.keys import Keys
+
+from Images_on_site.count_images import get_page_numbers
 from must_have.crome_options import setting_chrome_options
 from must_have.make_documents_subfolder import make_documents_subfolder
-from must_have.soup import get_soup
+from must_have.soup import get_soup, get_html
 
 browser = webdriver.Chrome(options=setting_chrome_options())
 
@@ -21,19 +23,6 @@ def first_enter():
     search_input.send_keys(Keys.ENTER)
 
 
-def get_html(link):
-    browser.get(link)
-    html = browser.page_source
-    return html
-
-
-def get_page_numbers(url):  # get number of images on site
-    soup = get_soup(get_html(f'{url}1'))
-    images_online = int(str(soup.select(".result-counter#nb-result"))[42:47])
-    page_number = images_online // 20 + 1
-    return page_number, images_online
-
-
 def check_all_images():  # 1. start to check images
     url = 'https://www.tassphoto.com/ru/asset/fullTextSearch/search/' \
           '%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%20%D0%9B%D0%B8%D1%85%D0%BE%D0%B4%D0%B5%D0%B5%D0%B2/page/'
@@ -42,7 +31,7 @@ def check_all_images():  # 1. start to check images
     from xlsx_tools.create_all_TASS_images import create_xlsx
     ws, wb = create_xlsx(report_folder)
     count = 1
-    for n in range(1, page_number + 1):  # количество страниц для анализа  - page_number + 1
+    for n in range(1, page_number + 1):  # количество страниц  на сайте для анализа  - page_number + 1
         link = f'{url}{n}'
         soup = get_soup(get_html(link))
         thumbs_data = soup.find('ul', id="mosaic").find_all('div', class_="thumb-content thumb-width thumb-height")
