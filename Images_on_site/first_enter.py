@@ -6,8 +6,9 @@ from selenium.webdriver.common.keys import Keys
 from must_have.crome_options import setting_chrome_options
 import time
 
-browser = webdriver.Chrome(options=setting_chrome_options())
+
 def first_enter():
+    browser = webdriver.Chrome(options=setting_chrome_options())
 
     browser.get('https://www.tassphoto.com/ru')
     WebDriverWait(browser, 10).until(
@@ -17,11 +18,11 @@ def first_enter():
     search_input.clear()
     search_input.send_keys('Семен Лиходеев')
     search_input.send_keys(Keys.ENTER)
-
+    return browser
 
 
 if __name__ == '__main__':
-    first_enter()
+    start_page = first_enter()
     time.sleep(10)
-    browser.close()
-    browser.quit()
+    start_page.close()
+    start_page.quit()
