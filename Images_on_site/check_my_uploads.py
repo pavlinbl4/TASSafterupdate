@@ -19,8 +19,8 @@ from xlsx_tools.create_all_TASS_images import create_xlsx
 
 browser = webdriver.Chrome(options=setting_chrome_options())
 
-
-url = 'https://www.tassphoto.com/ru/asset/fullTextSearch/search/%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%20%D0%9B%D0%B8%D1%85%D0%BE%D0%B4%D0%B5%D0%B5%D0%B2/page/'
+url = 'https://www.tassphoto.com/ru/asset/fullTextSearch' \
+      '/search/%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%20%D0%9B%D0%B8%D1%85%D0%BE%D0%B4%D0%B5%D0%B5%D0%B2/page/'
 
 
 def image_downloader(difference, last_date):
@@ -71,7 +71,6 @@ def check_all_images(page_number, images_online):  # 1. start to check images
             ws[f'E{count}'] = image_link
     wb.save(f'{report_folder}/all_TASS_images.xlsx')
     wb.close()
-
 
 
 def add_data():  # function check number of images
