@@ -3,7 +3,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.keys import Keys
-
 from Images_on_site.count_images import get_page_numbers
 from must_have.crome_options import setting_chrome_options
 from must_have.make_documents_subfolder import make_documents_subfolder
@@ -27,13 +26,13 @@ def check_all_images():  # 1. start to check images
     url = 'https://www.tassphoto.com/ru/asset/fullTextSearch/search/' \
           '%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%20%D0%9B%D0%B8%D1%85%D0%BE%D0%B4%D0%B5%D0%B5%D0%B2/page/'
 
-    page_number, images_online = get_page_numbers(url)  # 2. get number of images on site
+    page_number, images_online = get_page_numbers(url, browser)  # 2. get number of images on site
     from xlsx_tools.create_all_TASS_images import create_xlsx
     ws, wb = create_xlsx(report_folder)
     count = 1
-    for n in range(1, page_number + 1):  # количество страниц  на сайте для анализа  - page_number + 1
+    for n in range(1, page_number + 1):  # количество страниц на сайте для анализа - page_number + 1
         link = f'{url}{n}'
-        soup = get_soup(get_html(link))
+        soup = get_soup(get_html(link, browser))
         thumbs_data = soup.find('ul', id="mosaic").find_all('div', class_="thumb-content thumb-width thumb-height")
         images_on_page = len(soup.find('ul', id="mosaic").find_all('a', class_="zoom"))
         for i in range(images_on_page):
