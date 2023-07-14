@@ -3,6 +3,8 @@ import os
 from datetime import datetime
 from openpyxl import load_workbook
 
+from must_have.make_documents_subfolder import make_documents_subfolder
+
 
 def create_columns_names(ws):
     ws[f'A1'] = 'images_online'
@@ -12,11 +14,11 @@ def create_columns_names(ws):
     ws[f'E1'] = 'image_link'
 
 
-def create_xlsx(report_folder):
+def create_xlsx(report_folder, file_name):
     today = datetime.now().strftime("%Y-%m-%d")
-    if os.path.exists(f'{report_folder}/all_TASS_images.xlsx'):
+    if os.path.exists(f'{report_folder}/{file_name}.xlsx'):
         wb = load_workbook(
-            f'{report_folder}/all_TASS_images.xlsx')  # файл есть и открываю его - too long to open big old file
+            f'{report_folder}/{file_name}.xlsx')  # файл есть и открываю его - too long to open big old file
         ws = wb.create_sheet(today)  # добавляю новую таблицу
         create_columns_names(ws)
     else:
@@ -30,4 +32,11 @@ def create_xlsx(report_folder):
     ws.column_dimensions['C'].width = 10  # задаю ширину колонки
     ws.column_dimensions['D'].width = 110
     ws.column_dimensions['E'].width = 50
+    wb.save(file_name)
+    # wb.close()
     return ws, wb
+
+
+if __name__ == '__main__':
+    report_folder = make_documents_subfolder('TASS/Tass_data')
+    print(create_xlsx(report_folder, 'TASS_photo'))

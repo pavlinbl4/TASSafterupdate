@@ -16,7 +16,3 @@ if __name__ == '__main__':
     print(get_page_numbers(url_tass, browser))
     browser.close()
     browser.quit()
-
-
-
-

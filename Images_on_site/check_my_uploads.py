@@ -73,10 +73,10 @@ def check_all_images(page_number, images_online):  # 1. start to check images
     wb.close()
 
 
-def add_data():  # function check number of images
+def add_data(file):  # function check number of images
     page_number, images_online = get_page_numbers(url, browser)  # get information about images online
-    file = f"{report_folder}/TASS_photos.xlsx"
-    book = load_workbook(file)
+    # file = f"{report_folder}/TASS_photos.xlsx"
+    book = load_workbook(file)  # if no file - create it
     ws = book.active
     last_row = ws.max_row
     old_value = ws.cell(row=last_row, column=2).value  # последние данные в таблице
@@ -118,4 +118,7 @@ def add_data():  # function check number of images
 
 if __name__ == '__main__':
     report_folder = make_documents_subfolder('TASS/Tass_data')
-    add_data()
+    create_xlsx(report_folder, "TASS_photo")
+    add_data("/Users/evgeniy/Documents/TASS/Tass_data/TASS_photos.xlsx")
+
+
