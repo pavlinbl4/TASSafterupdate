@@ -13,5 +13,9 @@ def report_from_tass_mail(mail_as_html):
     return report
 
 
+def get_report_date(mail_report):
+    return mail_report[0][2]
+
+
 if __name__ == '__main__':
-    print(report_from_tass_mail("/Users/evgeniy/Downloads/Gmail - Отчет по продажам июнь_ТАСС.html")[2])
+    print(report_from_tass_mail("/Users/evgeniy/Downloads/Gmail - Отчет по продажам июль_ТАСС.html")[0])
