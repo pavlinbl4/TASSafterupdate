@@ -1,12 +1,10 @@
 from tkinter import filedialog
-from html_report.main import report_from_tass_mail, get_report_date
+from html_report.pars_tass_mail import report_from_tass_mail, get_report_date
 from html_report.prevue_downloader import get_preview_mail_report
 from html_report.write_to_xlsx import write_to_main_file
 import re
 
-# mail_as_html = '/Users/evgeniy/Downloads/Gmail - Отчет по продажам июнь_ТАСС.html'
 main_report = '/Users/evgeniy/Library/Mobile Documents/com~apple~CloudDocs/TASS/all_years_report.xlsx'
-# file_to_work #  TASS report file
 mail_as_html = filedialog.askopenfile().name
 
 
