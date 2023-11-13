@@ -23,7 +23,7 @@ def get_info_from_report(mail_report: dict) -> dict:
 def tass_sales():
     mail_report = report_from_tass_mail(mail_as_html)
     report_date = get_report_date(mail_report)
-    print(f"{report_date = }")
+    # print(f"{report_date = }")
     photos = get_info_from_report(mail_report)
     write_to_main_file(photos, main_report, report_date)
     get_preview_mail_report(mail_report, report_date)
