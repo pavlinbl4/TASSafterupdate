@@ -23,6 +23,6 @@ def first_enter():
 
 if __name__ == '__main__':
     start_page = first_enter()
-    time.sleep(10)
+    time.sleep(3)
     start_page.close()
     start_page.quit()
