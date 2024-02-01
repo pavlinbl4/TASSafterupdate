@@ -14,7 +14,8 @@ def get_info_from_report(mail_report: dict) -> dict:
         if re.search(r'\d', mail_report[i][0]):
             print(mail_report[i])
             photo_id = mail_report[i][3]
-            money = float(mail_report[i][5].replace(',', '.'))
+            remove_spacese_and_comma_in_mail_report = mail_report[i][5].replace(' ', '').replace(',', '.')
+            money = float(remove_spacese_and_comma_in_mail_report)
             photos.setdefault(photo_id, [])
             photos[photo_id].append(money)
     return photos  # словарь где ключ  id снимка , а значение список с цифрами покупок
