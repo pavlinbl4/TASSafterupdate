@@ -1,9 +1,9 @@
 from bs4 import BeautifulSoup
-
 from html_report.gui_select_file import select_file_via_gui
 
 
-def report_from_tass_mail(mail_as_html):
+# from html report file extract dict with information about sales
+def report_from_tass_mail(mail_as_html: str) -> dict:
     with open(mail_as_html, 'r') as report_file:
         table = BeautifulSoup(report_file, 'lxml')
     table = table.find('tbody')
@@ -18,10 +18,13 @@ def report_from_tass_mail(mail_as_html):
 def get_report_date(mail_report):
     return mail_report[0][2]
 
+
 def main():
     path_to_report_file = select_file_via_gui()
     print(report_from_tass_mail(path_to_report_file)[0])
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    print((report_from_tass_mail
+           ("/Volumes/big4photo/_PYTHON/TASS_after_update/tests/files_for_test/Gmail - Отчет по продажам февраль_ТАСС.html")))
