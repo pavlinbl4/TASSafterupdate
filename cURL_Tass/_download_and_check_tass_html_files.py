@@ -2,7 +2,6 @@
 
 import requests
 from urllib.parse import quote
-
 from must_have.create_sub_directory import create_directory
 from must_have.delete_html_folder import delete_folder
 from parse_tass_offline import number_of_pages, main_check_downloaded_files
@@ -12,50 +11,41 @@ from tqdm import trange
 
 
 def get_response(url):
-    response = requests.get(
-        url=url,
-        cookies=cookies,
-        headers=headers,
-    )
-    return response
+    try:
+        response = requests.get(url, cookies=cookies, headers=headers)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        return response
+    except requests.RequestException as e:
+        print(f"Error fetching URL {url}: {e}")
+        return None
 
 
-def save_response_as_html(url, path_to_html_files):
+def save_response_as_html(url, path, filename):
     response = get_response(url)
+    if response:
+        with open(f"{path}/{filename}.html", 'w', encoding='utf-8') as html_file:
+            html_file.write(response.text)
 
-    with open(f"{path_to_html_files}/rezult_tass_{url.split('/')[-1]}.html", 'w') as html_file:
-        html_file.write(response.text)
 
-
-def page_pagination(page_number, path_to_html_files):
+def download_page(page_number, path):
     url = f'https://www.tassphoto.com/ru/asset/fullTextSearch/search/Семен+Лиходеев/page/{page_number}'
-    url = quote(url, safe=':/')
-    save_response_as_html(url, path_to_html_files)
+    encoded_url = quote(url, safe=':/')
+    filename = f'rezult_tass_{page_number}'
+    save_response_as_html(encoded_url, path, filename)
 
 
-def find_pages_number(path_to_html_files):
-    #  how many pages I want to save
-
-    # save first page
-    page_pagination(1, path_to_html_files)
-
-    # get amount of pages from first html file
-    return number_of_pages(f'{path_to_html_files}/rezult_tass_1.html')
+def determine_total_pages(path):
+    # Download the first page to determine the total number of pages
+    download_page(1, path)
+    return number_of_pages(f'{path}/rezult_tass_1.html')
 
 
 def main():
-    # create directory to save html files
     path_to_html_files = create_directory(".", 'tass_html')
-
-    # find number of pages to download
-    pages_count = int(find_pages_number(path_to_html_files))
-
-    #  start to save pages from number 2
-    for i in trange(1, pages_count + 1, desc='Downloading html pages', colour='Green'):
-        page_pagination(i + 1, path_to_html_files)
-
+    total_pages = determine_total_pages(path_to_html_files)
+    for page_number in trange(1, total_pages + 1, desc='Downloading HTML pages', unit='page'):
+        download_page(page_number + 1, path_to_html_files)
     main_check_downloaded_files(path_to_html_files)
-
     delete_folder(path_to_html_files)
 
 
