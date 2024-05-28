@@ -24,7 +24,4 @@ def main():
     print(report_from_tass_mail(path_to_report_file)[0])
 
 
-if __name__ == '__main__':
-    # main()
-    print((report_from_tass_mail
-           ("/Volumes/big4photo/_PYTHON/TASS_after_update/tests/files_for_test/Gmail - Отчет по продажам февраль_ТАСС.html")))
+
