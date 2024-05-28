@@ -1,25 +1,13 @@
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.common.keys import Keys
 from Images_on_site.count_images import get_page_numbers
+from Images_on_site.first_enter import first_enter
+from Images_on_site.images_info import get_image_caption
+
 from must_have.crome_options import setting_chrome_options
 from must_have.make_documents_subfolder import make_documents_subfolder
 from must_have.soup import get_soup, get_html
 
 browser = webdriver.Chrome(options=setting_chrome_options())
-
-
-def first_enter():
-    browser.get('https://www.tassphoto.com/ru')
-    WebDriverWait(browser, 10).until(
-        ec.presence_of_element_located((By.ID, "userrequest"))
-    )
-    search_input = browser.find_element(By.ID, "userrequest")
-    search_input.clear()
-    search_input.send_keys('Семен Лиходеев')
-    search_input.send_keys(Keys.ENTER)
 
 
 def check_all_images():  # 1. start to check images
@@ -39,12 +27,8 @@ def check_all_images():  # 1. start to check images
             count += 1
             image_date = thumbs_data[i].find(class_="date").text
             image_id = thumbs_data[i].find(class_="title").text
-            image_title = thumbs_data[i].find('p').text
-            if soup.find('ul', id="mosaic") is not None:
-                image_caption = soup.find('ul', id="mosaic").find_all(class_="thumb-text")[i].text.strip().split('\n')[
-                    -1].lstrip().replace(' Семен Лиходеев/ТАСС', '').replace(' Фото ИТАР-ТАСС/ Семен Лиходеев', '')
-            else:
-                image_caption = "Some problem with caption"
+            image_title = get_image_information(i, thumbs_data)
+            image_caption = get_image_data(i, soup)
             image_link = soup.find('ul', id="mosaic").find_all('a', class_="zoom")[i].find('img').get('src')
             print(count - 1, image_id, image_date)
             print(image_title)
@@ -57,6 +41,19 @@ def check_all_images():  # 1. start to check images
             ws[f'E{count}'] = image_link
     wb.save(f'{report_folder}/all_TASS_images.xlsx')
     wb.close()
+
+
+def get_image_information(i, thumbs_data):
+    image_title = thumbs_data[i].find('p').text
+    return image_title
+
+
+def get_image_data(i, soup):
+    image_caption = get_image_caption(i, soup)
+    return image_caption
+
+
+
 
 
 if __name__ == '__main__':
