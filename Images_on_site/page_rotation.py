@@ -1,5 +1,6 @@
 from Images_on_site.count_images import get_page_numbers
 from Images_on_site.first_enter import first_enter
+from Images_on_site.images_info import get_image_caption
 
 
 def extract_images_info(images_on_page, thumbs_data, soup, count):
@@ -7,11 +8,7 @@ def extract_images_info(images_on_page, thumbs_data, soup, count):
         image_date = thumbs_data[i].find(class_="date").text
         image_id = thumbs_data[i].find(class_="title").text
         image_title = thumbs_data[i].find('p').text
-        if soup.find('ul', id="mosaic") is not None:
-            image_caption = soup.find('ul', id="mosaic").find_all(class_="thumb-text")[i].text.strip().split('\n')[
-                -1].lstrip().replace(' Семен Лиходеев/ТАСС', '').replace(' Фото ИТАР-ТАСС/ Семен Лиходеев', '')
-        else:
-            image_caption = "Some problem with caption"
+        image_caption = get_image_caption(i, soup)
         image_link = soup.find('ul', id="mosaic").find_all('a', class_="zoom")[i].find('img').get('src')
         count += 1
         print(count, image_id, image_date)
