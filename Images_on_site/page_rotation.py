@@ -25,7 +25,7 @@ def images_on_page_info(soup):
 
 
 def main():
-    browser = first_enter()
+    browser = first_enter('Семен Лиходеев')
     page_number, images_online = get_page_numbers(url, browser)  # 2. get number of images on site
     print(f'{page_number = }')
     return browser

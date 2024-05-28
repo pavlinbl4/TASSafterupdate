@@ -58,7 +58,7 @@ def get_image_data(i, soup):
 
 if __name__ == '__main__':
     report_folder = make_documents_subfolder('TASS/Tass_data')
-    first_enter()
+    first_enter('Семен Лиходеев')
     check_all_images()
     browser.close()
     browser.quit()

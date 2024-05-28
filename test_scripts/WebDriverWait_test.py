@@ -1,5 +1,5 @@
 """
-проверяю ка работает Selenium и устанавливаю умную задержку на открытие сайта
+Проверяю ка работает Selenium и устанавливаю умную задержку на открытие сайта
 """
 
 from bs4 import BeautifulSoup
@@ -26,7 +26,7 @@ def main(html):
 
 
 def get_html():
-    browser = first_enter()
+    browser = first_enter('Семен Лиходеев')
 
     html = browser.page_source
 

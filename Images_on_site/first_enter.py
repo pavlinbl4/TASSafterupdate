@@ -7,7 +7,7 @@ from must_have.crome_options import setting_chrome_options
 import time
 
 
-def first_enter():
+def first_enter(search_word):
     browser = webdriver.Chrome(options=setting_chrome_options())
 
     browser.get('https://www.tassphoto.com/ru')
@@ -16,13 +16,13 @@ def first_enter():
     )
     search_input = browser.find_element(By.ID, "userrequest")
     search_input.clear()
-    search_input.send_keys('Семен Лиходеев')
+    search_input.send_keys(search_word)
     search_input.send_keys(Keys.ENTER)
     return browser
 
 
 if __name__ == '__main__':
-    start_page = first_enter()
+    start_page = first_enter('Семен Лиходеев')
     time.sleep(3)
     start_page.close()
     start_page.quit()
