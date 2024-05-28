@@ -9,8 +9,8 @@ def open_page_with_selenium(url: str):
 
     # Инициализируем драйвер с указанными опциями
     driver = webdriver.Chrome(service=service, options=setting_chrome_options())
-    # Открываем страницу в браузере
 
+    # Открываем страницу в браузере
     driver.get(url)
 
     return driver
