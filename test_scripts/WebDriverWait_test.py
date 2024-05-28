@@ -1,14 +1,10 @@
 """
-проверяю ка работает селениум и устанавливаю умную задержку на открытие сайта
+проверяю ка работает Selenium и устанавливаю умную задержку на открытие сайта
 """
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
-from must_have.crome_options import setting_chrome_options
+
+from Images_on_site.first_enter import first_enter
 
 
 def main(html):
@@ -30,17 +26,8 @@ def main(html):
 
 
 def get_html():
-    options = setting_chrome_options()
-    browser = webdriver.Chrome(options=options)
+    browser = first_enter()
 
-    browser.get('https://www.tassphoto.com/ru')
-    WebDriverWait(browser, 10).until(
-        ec.presence_of_element_located((By.ID, "userrequest"))
-    )
-    search_input = browser.find_element(By.ID, "userrequest")
-    search_input.clear()
-    search_input.send_keys('Семен Лиходеев')
-    search_input.send_keys(Keys.ENTER)
     html = browser.page_source
 
     browser.close()
