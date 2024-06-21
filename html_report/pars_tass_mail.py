@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from html_report.gui_select_file import select_file_via_gui
+from gui_select_file import select_file_via_gui
 
 
 # from html report file extract dict with information about sales
@@ -22,6 +22,3 @@ def get_report_date(mail_report):
 def main():
     path_to_report_file = select_file_via_gui()
     print(report_from_tass_mail(path_to_report_file)[0])
-
-
-
