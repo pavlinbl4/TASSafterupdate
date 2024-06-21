@@ -1,8 +1,9 @@
 from tkinter import filedialog
-from html_report.pars_tass_mail import report_from_tass_mail, get_report_date
-from html_report.prevue_downloader import get_preview_mail_report
-from html_report.write_to_xlsx import write_to_main_file
 import re
+
+from pars_tass_mail import report_from_tass_mail, get_report_date
+from prevue_downloader import get_preview_mail_report
+from write_to_xlsx import write_to_main_file
 
 main_report = '/Users/evgeniy/Library/Mobile Documents/com~apple~CloudDocs/TASS/all_years_report.xlsx'
 mail_as_html = filedialog.askopenfile().name
@@ -15,8 +16,8 @@ def get_info_from_report(mail_report: dict) -> dict:
         if re.search(r'\d', mail_report[i][0]):
             print(mail_report[i])
             photo_id = mail_report[i][3]
-            remove_spacese_and_comma_in_mail_report = mail_report[i][5].replace(' ', '').replace(',', '.')
-            money = float(remove_spacese_and_comma_in_mail_report)
+            remove_spaces_and_comma_in_mail_report = mail_report[i][5].replace(' ', '').replace(',', '.')
+            money = float(remove_spaces_and_comma_in_mail_report)
             photos.setdefault(photo_id, [])
             photos[photo_id].append(money)
     return photos
