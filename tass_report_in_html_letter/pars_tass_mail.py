@@ -1,10 +1,12 @@
 from bs4 import BeautifulSoup
-from html_report.gui_select_file import select_file_via_gui
+from work_with_tass_sales_report.gui_select_file import select_file_via_gui
+from loguru import logger
 
 
-# from html report file extract dict with information about sales
-def report_from_tass_mail(mail_as_html: str) -> dict:
-    with open(mail_as_html, 'r') as report_file:
+# from html report file extract dict with information about sales,
+# index row number, value - list from columns date
+def report_from_tass_mail(path_to_report_file: str) -> dict:
+    with open(path_to_report_file, 'r') as report_file:
         table = BeautifulSoup(report_file, 'lxml')
     table = table.find('tbody')
     table = table.find_all('tr')[4:]  # start with data row in table
@@ -15,8 +17,13 @@ def report_from_tass_mail(mail_as_html: str) -> dict:
     return report
 
 
-def get_report_date(mail_report):
-    return mail_report[0][2]
+def get_report_date(mail_report, file_extension):
+    if file_extension == '.html':
+        logger.info(mail_report[0][2])
+        return mail_report[0][2]
+    elif file_extension == '.xlsx':
+        logger.info(mail_report[6][2])
+        return mail_report[6][2]
 
 
 def main():
@@ -24,4 +31,5 @@ def main():
     print(report_from_tass_mail(path_to_report_file)[0])
 
 
-
+if __name__ == '__main__':
+    print(report_from_tass_mail('../files_for_test/html_report.html'))
