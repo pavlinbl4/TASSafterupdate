@@ -5,7 +5,7 @@ from loguru import logger
 
 # from html report file extract dict with information about sales,
 # index row number, value - list from columns date
-def report_from_tass_mail(path_to_report_file: str) -> dict:
+def report_from_html_report_file(path_to_report_file: str) -> dict:
     with open(path_to_report_file, 'r') as report_file:
         table = BeautifulSoup(report_file, 'lxml')
     table = table.find('tbody')
@@ -28,8 +28,8 @@ def get_report_date(mail_report, file_extension):
 
 def main():
     path_to_report_file = select_file_via_gui()
-    print(report_from_tass_mail(path_to_report_file)[0])
+    print(report_from_html_report_file(path_to_report_file)[0])
 
 
 if __name__ == '__main__':
-    print(report_from_tass_mail('../files_for_test/html_report.html'))
+    print(report_from_html_report_file('../files_for_test/html_report.html'))
