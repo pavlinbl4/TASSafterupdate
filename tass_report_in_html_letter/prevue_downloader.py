@@ -10,8 +10,10 @@ from tqdm import tqdm
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 
+from work_with_tass_sales_report.data_from_report import extract_money_value_from_report_file
 
-def get_preview_mail_report(mail_report: dict, report_date: str):
+
+def get_preview_mail_report(mail_report: dict, report_date: str, file_extension:str):
     picture_folder = f'{"/Users/evgeniy/Library/Mobile Documents/com~apple~CloudDocs/TASS/"}{report_date}'
     os.makedirs(picture_folder, exist_ok=True)
     service = Service(ChromeDriverManager().install())
@@ -19,9 +21,7 @@ def get_preview_mail_report(mail_report: dict, report_date: str):
 
     for i in tqdm(mail_report):
         if re.search(r'\d', mail_report[i][0]):
-            # print(mail_report[i])
-            photo_id = mail_report[i][3]
-            money = float(mail_report[i][5].replace(' ', '').replace(',', '.'))
+            money, photo_id = extract_money_value_from_report_file(file_extension, i, mail_report)
             try:
                 driver.get('https://www.tassphoto.com/ru')
                 WebDriverWait(driver, 10).until(
