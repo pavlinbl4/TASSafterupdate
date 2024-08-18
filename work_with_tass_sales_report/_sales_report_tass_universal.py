@@ -39,7 +39,7 @@ def tass_sales():
     logger.info(photos)
 
     write_to_main_file(photos, main_report, report_date)
-    # get_preview_mail_report(mail_report, report_date, file_extension)
+    get_preview_mail_report(mail_report, report_date)
     # print(photos)
 
 
