@@ -22,6 +22,10 @@ def get_report_date(mail_report, file_extension):
         logger.info(mail_report[0][2])
         return mail_report[0][2]
     elif file_extension == '.xlsx':
+        if mail_report[6][2] == "Профиль":
+            logger.info(f"старый xlsx отчет {mail_report[5][2]}")
+            return mail_report[5][2]
+
         logger.info(mail_report[6][2])
         return mail_report[6][2]
 
