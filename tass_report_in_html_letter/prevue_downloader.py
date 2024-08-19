@@ -9,6 +9,7 @@ import re
 from tqdm import tqdm
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+from loguru import logger
 
 
 def get_preview_mail_report(mail_report: dict, report_date: str):
@@ -18,10 +19,12 @@ def get_preview_mail_report(mail_report: dict, report_date: str):
     driver = webdriver.Chrome(service=service, options=setting_chrome_options())
 
     for i in tqdm(mail_report):
-        if re.search(r'\d', mail_report[i][0]):
+        logger.info(f"{mail_report[i][0] = } {type(mail_report[i][0]) = }")
+        if re.search(r'\d', str(mail_report[i][0])):
             # print(mail_report[i])
             photo_id = mail_report[i][3]
-            money = float(mail_report[i][5].replace(' ', '').replace(',', '.'))
+            # money = float(mail_report[i][5].replace(' ', '').replace(',', '.')) # new report money type is string
+            money = float(mail_report[i][5])  # for old xlsx report - money type is integer
             try:
                 driver.get('https://www.tassphoto.com/ru')
                 WebDriverWait(driver, 10).until(
