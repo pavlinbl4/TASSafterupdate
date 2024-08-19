@@ -27,20 +27,23 @@ def tass_sales():
 
     mail_report = extract_mail_report(file_extension, path_to_report_file)
     # mail_report -  dict with index row number, value - list from columns date
-    logger.info(mail_report)
+    logger.info(f"{mail_report = }")
 
     # get date from report file
     report_date = get_report_date(mail_report, file_extension)
     logger.info(report_date)
 
     # create dict with images id and sales information
-    photos = get_info_from_report(mail_report, file_extension)
-    # photos dict with index photo id nad value list with money income
-    logger.info(photos)
+    photos_report = get_info_from_report(mail_report, file_extension)
 
-    write_to_main_file(photos, main_report, report_date)
-    get_preview_mail_report(mail_report, report_date)
-    # print(photos)
+    # photos dict with index photo id nad value list with money income
+    logger.info(f"{photos_report = }")
+
+    write_to_main_file(photos_report, main_report, report_date)
+
+    # надо передавать "photos" для скачивания снимков, а не "mail_report" - попробовать
+    # photos = {1439890: [327.888324873], 45600520: [172.551020408], 53596363: [275.65, 345.692913385]} - пример
+    get_preview_mail_report(photos_report, report_date)
 
 
 # check file extension and extract data from suitable file
