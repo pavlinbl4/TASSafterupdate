@@ -20,11 +20,11 @@ def extract_money_value_from_mail_report(file_extension, i, mail_report):
     remove_spaces_and_comma_in_mail_report = None
     if file_extension == '.xlsx':
         logger.info(f"File report is XLSX - {type(mail_report[i][5])}")
-        if mail_report[i][5] is int:
+        if isinstance(mail_report[i][5], (int, float)):
             logger.info(
                 f"Old type report {mail_report[i][5] = }, {type(mail_report[i][5])}")  # for old xlsx report - money in 5 column
             remove_spaces_and_comma_in_mail_report = mail_report[i][5]  # for old report money is integer
-        else:
+        elif isinstance(mail_report[i][5], str):
             logger.info(f" New type report {mail_report[i][6] = }")
             remove_spaces_and_comma_in_mail_report = mail_report[i][6].replace(' ', '').replace(',', '.')
 
