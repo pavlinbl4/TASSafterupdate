@@ -8,9 +8,9 @@ from tkinter import filedialog
 
 from loguru import logger
 
-from tass_report_in_html_letter.pars_tass_mail import report_from_tass_mail, get_report_date
-from tass_report_in_html_letter.prevue_downloader import get_preview_mail_report
-from tass_report_in_html_letter.write_to_xlsx import write_to_main_file
+from work_with_tass_sales_report.pars_tass_mail import report_from_tass_mail, get_report_date
+from work_with_tass_sales_report.prevue_downloader import get_preview_mail_report
+from work_with_tass_sales_report.write_to_xlsx import write_to_main_file
 from work_with_tass_sales_report.data_from_report import get_info_from_report
 from work_with_tass_sales_report.extract_dict_from_xlsx_report import report_from_tass_xlsx_file
 
