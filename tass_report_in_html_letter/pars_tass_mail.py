@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
-from work_with_tass_sales_report.gui_select_file import select_file_via_gui
 from loguru import logger
+
+from work_with_tass_sales_report.gui_select_file import select_file_via_gui
 
 
 # from html report file extract dict with information about sales,
@@ -17,15 +18,13 @@ def report_from_tass_mail(path_to_report_file: str) -> dict:
     return report
 
 
-def get_report_date(mail_report, file_extension):
+def get_report_date(mail_report, file_extension: str):
     if file_extension == '.html':
         logger.info(mail_report[0][2])
         return mail_report[0][2]
     elif file_extension == '.xlsx':
         if mail_report[6][2] == "Профиль":
-            logger.info(f"старый xlsx отчет {mail_report[5][2]}")
             return mail_report[5][2]
-
         logger.info(mail_report[6][2])
         return mail_report[6][2]
 
