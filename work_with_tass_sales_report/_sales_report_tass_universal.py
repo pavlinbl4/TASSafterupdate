@@ -40,7 +40,7 @@ def tass_sales():
 
 
 # check file extension and extract data from suitable file
-def extract_mail_report(file_extension, path_to_report_file):
+def extract_mail_report(file_extension: str, path_to_report_file: str) -> dict:
     mail_report = None
     if file_extension == '.html':
         mail_report = report_from_tass_mail(path_to_report_file)
