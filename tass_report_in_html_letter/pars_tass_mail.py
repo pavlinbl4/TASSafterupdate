@@ -18,15 +18,19 @@ def report_from_tass_mail(path_to_report_file: str) -> dict:
     return report
 
 
-def get_report_date(mail_report, file_extension: str):
+def get_report_date(mail_report: list, file_extension: str) -> str:
     if file_extension == '.html':
-        logger.info(mail_report[0][2])
-        return mail_report[0][2]
+        report_date = mail_report[0][2]
     elif file_extension == '.xlsx':
         if mail_report[6][2] == "Профиль":
-            return mail_report[5][2]
-        logger.info(mail_report[6][2])
-        return mail_report[6][2]
+            report_date = mail_report[5][2]
+        else:
+            report_date = mail_report[6][2]
+    else:
+        raise ValueError(f"Unsupported file extension: {file_extension}")
+
+    logger.info(report_date)
+    return report_date
 
 
 def main():
