@@ -7,15 +7,18 @@ from work_with_tass_sales_report.gui_select_file import select_file_via_gui
 # from html report file extract dict with information about sales,
 # index row number, value - list from columns date
 def report_from_tass_mail(path_to_report_file: str) -> dict:
-    with open(path_to_report_file, 'r') as report_file:
-        table = BeautifulSoup(report_file, 'lxml')
-    table = table.find('tbody')
-    table = table.find_all('tr')[4:]  # start with data row in table
-    row_in_table = [x for x in table]
-    report = {}
-    for i in range(len(table)):
-        report[i] = [x.text.strip() for x in row_in_table[i].find_all('td')]
-    return report
+    try:
+        with open(path_to_report_file, 'r') as report_file:
+            soup = BeautifulSoup(report_file, 'lxml')
+        table_body = soup.find('tbody')
+        rows = table_body.find_all('tr')[4:]  # Start with data rows
+        report = {}
+        for index, row in enumerate(rows):
+            report[index] = [cell.text.strip() for cell in row.find_all('td')]
+        return report
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return {}
 
 
 def get_report_date(mail_report: list, file_extension: str) -> str:
