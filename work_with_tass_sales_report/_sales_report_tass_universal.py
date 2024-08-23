@@ -8,26 +8,24 @@ from tkinter import filedialog
 
 from loguru import logger
 
-from work_with_tass_sales_report.data_from_report import get_info_from_report
-from work_with_tass_sales_report.extract_dict_from_xlsx_report import report_from_tass_xlsx_file
 from tass_report_in_html_letter.pars_tass_mail import report_from_tass_mail, get_report_date
 from tass_report_in_html_letter.prevue_downloader import get_preview_mail_report
 from tass_report_in_html_letter.write_to_xlsx import write_to_main_file
+from work_with_tass_sales_report.data_from_report import get_info_from_report
+from work_with_tass_sales_report.extract_dict_from_xlsx_report import report_from_tass_xlsx_file
 
 main_report = '/Users/evgeniy/Library/Mobile Documents/com~apple~CloudDocs/TASS/all_years_report.xlsx'
 
 
 def tass_sales():
     path_to_report_file = filedialog.askopenfile().name
-    logger.info(path_to_report_file)
 
     # check file extension
     file_extension = Path(path_to_report_file).suffix
-    logger.info(file_extension)
 
     mail_report = extract_mail_report(file_extension, path_to_report_file)
     # mail_report -  dict with index row number, value - list from columns date
-    logger.info(f"{mail_report = }")
+    # logger.info(f"{mail_report = }")
 
     # get date from report file
     report_date = get_report_date(mail_report, file_extension)
@@ -36,13 +34,8 @@ def tass_sales():
     # create dict with images id and sales information
     photos_report = get_info_from_report(mail_report, file_extension)
 
-    # photos dict with index photo id nad value list with money income
-    logger.info(f"{photos_report = }")
-
     write_to_main_file(photos_report, main_report, report_date)
 
-    # надо передавать "photos" для скачивания снимков, а не "mail_report" - попробовать
-    # photos = {1439890: [327.888324873], 45600520: [172.551020408], 53596363: [275.65, 345.692913385]} - пример
     get_preview_mail_report(photos_report, report_date)
 
 
@@ -50,14 +43,11 @@ def tass_sales():
 def extract_mail_report(file_extension, path_to_report_file):
     mail_report = None
     if file_extension == '.html':
-        # for the html report
         mail_report = report_from_tass_mail(path_to_report_file)
     elif file_extension == '.xlsx':
-        # for the xlsx report
         mail_report = report_from_tass_xlsx_file(path_to_report_file)
     else:
         print("wrong report file type")
-    # index row number, value - list from columns date
     return mail_report
 
 
