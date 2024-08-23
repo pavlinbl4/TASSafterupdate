@@ -1,15 +1,18 @@
 import os
-from selenium import webdriver
+
 import requests
+from loguru import logger
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from must_have.crome_options import setting_chrome_options
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-import re
+from selenium.webdriver.support.ui import WebDriverWait
 from tqdm import tqdm
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service
-from loguru import logger
+
+from must_have.crome_options import setting_chrome_options
+
+logger.add("output.log", format="{time} {level} {message}", level="INFO")
 
 
 def get_preview_mail_report(photos_report: dict, report_date: str):
@@ -24,7 +27,6 @@ def get_preview_mail_report(photos_report: dict, report_date: str):
 
         for money in income:
             rounded_money = f"{money:.2f}"
-            logger.info(f"{count} {photo_id = }, {rounded_money = }")
 
             try:
                 driver.get('https://www.tassphoto.com/ru')
@@ -42,7 +44,6 @@ def get_preview_mail_report(photos_report: dict, report_date: str):
                     img_file.write(get_image.content)
                 count += 1
             except Exception as NoSuchElementException:
-                logger.info(NoSuchElementException)
                 logger.info(f"image {photo_id = } don't found")
 
     driver.close()
