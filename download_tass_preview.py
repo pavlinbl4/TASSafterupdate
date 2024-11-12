@@ -17,7 +17,12 @@ service = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=service, options=setting_chrome_options())
 
 
-def download_photo_preview_by_id(photo_id: str, image_path: str):
+def download_photo_preview_by_id(photo_id: str, picture_folder_downloads, image_file_name=None):
+    image_file_name = image_file_name if image_file_name else f"{photo_id}.jpg"
+
+    image_path = os.path.join(picture_folder_downloads, image_file_name)
+    os.makedirs(picture_folder_downloads, exist_ok=True)
+
     driver.get(f'https://www.tassphoto.com/ru/asset/fullTextSearch/search/{photo_id}/page/1')
     WebDriverWait(driver, 10).until(
         ec.presence_of_element_located((By.ID, "userrequest"))
@@ -33,9 +38,5 @@ def download_photo_preview_by_id(photo_id: str, image_path: str):
 
 
 if __name__ == '__main__':
-    picture_folder = 'test_downloads'
-    image_file_name = 'renamed_jpeg_image.jpg'
-    _image_path = os.path.join(picture_folder, image_file_name)
-    os.makedirs(picture_folder,
-                exist_ok=True)
-    download_photo_preview_by_id('75520997', _image_path)
+
+    download_photo_preview_by_id('75520997', 'test_downloads', 'renamed_jpeg_image.jpg')
