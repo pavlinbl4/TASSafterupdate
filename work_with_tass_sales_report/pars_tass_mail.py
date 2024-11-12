@@ -26,9 +26,9 @@ def get_report_date(mail_report: dict, file_extension: str) -> str:
         report_date = mail_report[0][2]
     elif file_extension == '.xlsx':
         if mail_report[6][2] == "Профиль":
-            report_date = mail_report[5][2]
+            report_date = mail_report[5][2].lower()
         else:
-            report_date = mail_report[6][2]
+            report_date = mail_report[6][2].lower()
     else:
         raise ValueError(f"Unsupported file extension: {file_extension}")
 
