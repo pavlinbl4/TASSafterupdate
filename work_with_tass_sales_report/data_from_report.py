@@ -17,7 +17,7 @@ def extract_money_value_from_mail_report(file_extension, i, mail_report):
     photo_id = mail_report[i][3]
     remove_spaces_and_comma_in_mail_report = None
     if file_extension == '.xlsx':
-        logger.info(f'{mail_report[i][6] = } , {type(mail_report[i][6])}')
+        # logger.info(f'{mail_report[i][6] = } , {type(mail_report[i][6])}')
 
         if isinstance(mail_report[i][6], (int, float)):
             remove_spaces_and_comma_in_mail_report = mail_report[i][6].replace(' ', '')
