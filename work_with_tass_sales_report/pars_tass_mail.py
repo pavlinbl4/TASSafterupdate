@@ -1,3 +1,5 @@
+import re
+
 from bs4 import BeautifulSoup
 from loguru import logger
 
@@ -26,14 +28,20 @@ def get_report_date(mail_report: dict, file_extension: str) -> str:
         report_date = mail_report[0][2]
     elif file_extension == '.xlsx':
         if mail_report[6][2] == "Профиль":
-            report_date = mail_report[5][2].lower()
+            report_date = mail_report[5][2]
         else:
-            report_date = mail_report[6][2].lower()
+            report_date = mail_report[6][2]
     else:
         raise ValueError(f"Unsupported file extension: {file_extension}")
 
-    logger.info(report_date)
-    return report_date
+    logger.info(report_date.lower())
+    return report_date.lower()
+
+def get_year_from_report_date(report_date:str):
+    match = re.search(r'\b\d{4}\b',report_date)
+    if match:
+        return match.group()
+    return "No 4 digits"
 
 
 def main():
