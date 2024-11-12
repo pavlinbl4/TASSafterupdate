@@ -1,51 +1,44 @@
 import os
-import requests
-from tqdm import tqdm
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.common.exceptions import NoSuchElementException
-from webdriver_manager.chrome import ChromeDriverManager
+
 from loguru import logger
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.service import Service
+from tqdm import tqdm
+from webdriver_manager.chrome import ChromeDriverManager
+
+from download_tass_preview import download_photo_preview_by_id
 from must_have.crome_options import setting_chrome_options
+from work_with_tass_sales_report.pars_tass_mail import get_year_from_report_date
 
 logger.add("output.log", format="{time} {level} {message}", level="INFO")
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service, options=setting_chrome_options())
 
 
 def get_preview_mail_report(photos_report: dict, report_date: str):
-    picture_folder = f'{"/Users/evgeniy/Library/Mobile Documents/com~apple~CloudDocs/TASS/"}{report_date}'
-    os.makedirs(picture_folder, exist_ok=True)
+    year: str = get_year_from_report_date(report_date)
 
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=setting_chrome_options())
+    try:
+        picture_folder_downloads = f'{"/Users/evgeniy/Library/Mobile Documents/com~apple~CloudDocs/TASS/"}{year}/{report_date}'
+        os.makedirs(picture_folder_downloads, exist_ok=True)
+        logger.info(f"Images subfolder - {year}/{report_date}")
 
-    count = 1
+        count = 1
 
-    for photo_id, incomes in tqdm(photos_report.items()):
-        for income in incomes:
-            rounded_money = f"{income:.2f}"
+        for photo_id, incomes in tqdm(photos_report.items()):
+            for income in incomes:
+                rounded_money = f"{income:.2f}"
+                image_file_name = f"{photo_id}_{rounded_money}-({count}).jpg"
 
-            try:
-                driver.get(f'https://www.tassphoto.com/ru/asset/fullTextSearch/search/{photo_id}/page/1')
-                WebDriverWait(driver, 10).until(
-                    ec.presence_of_element_located((By.ID, "userrequest"))
-                )
+                try:
+                    download_photo_preview_by_id(photo_id,  picture_folder_downloads, image_file_name)
 
-                picture_element = driver.find_element(By.CSS_SELECTOR, f"img.thumb{photo_id}")
-                picture_url = picture_element.get_attribute("src")
+                    count += 1
 
-                image_response = requests.get(picture_url)
-                image_path = os.path.join(picture_folder, f"{photo_id}_{rounded_money}-({count}).jpg")
-
-                with open(image_path, 'wb') as img_file:
-                    img_file.write(image_response.content)
-
-                count += 1
-            except NoSuchElementException:
-                logger.info(f"Image not found for photo_id: {photo_id}")
-            except Exception as e:
-                logger.error(f"An error occurred while processing photo_id {photo_id}: {str(e)}")
-
-    driver.quit()
+                except NoSuchElementException as e:
+                    logger.info(f"Image not found for photo_id: {photo_id} | Error: {e}")
+                except Exception as e:
+                    logger.error(f"An error occurred while processing photo_id {photo_id}: {str(e)}")
+    finally:
+        driver.quit()
