@@ -1,23 +1,18 @@
 import time
 
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 
-from must_have.crome_options import setting_chrome_options
+from browser.check_selenium import open_page_with_selenium
 
 
 def first_enter(search_word):
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=setting_chrome_options())
 
-    driver.get('https://www.tassphoto.com/ru')
+    driver = open_page_with_selenium('https://www.tassphoto.com/ru')
 
-
+    # enter word in search field
     WebDriverWait(driver, 10).until(
         ec.presence_of_element_located((By.ID, "userrequest"))
     )
