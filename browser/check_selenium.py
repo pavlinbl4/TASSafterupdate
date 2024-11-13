@@ -1,7 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from browser.crome_options import setting_chrome_options
+
+from must_have.crome_options import setting_chrome_options
 
 
 def open_page_with_selenium(url: str):
