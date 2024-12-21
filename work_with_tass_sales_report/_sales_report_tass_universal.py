@@ -14,7 +14,9 @@ from work_with_tass_sales_report.write_to_xlsx import write_to_main_file
 from work_with_tass_sales_report.data_from_report import get_info_from_report
 from work_with_tass_sales_report.extract_dict_from_xlsx_report import report_from_tass_xlsx_file
 
-main_report = '/Users/evgeniy/Library/Mobile Documents/com~apple~CloudDocs/TASS/all_years_report.xlsx'
+
+icloud_folder = Path().home() / 'Library/Mobile Documents/com~apple~CloudDocs/'
+main_report = f'{icloud_folder}/TASS/all_years_report.xlsx'
 
 
 def tass_sales():
