@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from loguru import logger
 from selenium import webdriver
@@ -14,13 +15,13 @@ from work_with_tass_sales_report.pars_tass_mail import get_year_from_report_date
 logger.add("output.log", format="{time} {level} {message}", level="INFO")
 service = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=service, options=setting_chrome_options())
-
+icloud_folder = Path().home() / 'Library/Mobile Documents/com~apple~CloudDocs/'
 
 def get_preview_mail_report(photos_report: dict, report_date: str):
     year: str = get_year_from_report_date(report_date)
 
     try:
-        picture_folder_downloads = f'{"/Users/evgeniy/Library/Mobile Documents/com~apple~CloudDocs/TASS/"}{year}/{report_date}'
+        picture_folder_downloads = f'{icloud_folder}/TASS/{year}/{report_date}'
         os.makedirs(picture_folder_downloads, exist_ok=True)
         logger.info(f"Images subfolder - {year}/{report_date}")
 
