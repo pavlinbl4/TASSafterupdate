@@ -39,4 +39,4 @@ def download_photo_preview_by_id(photo_id: str, picture_folder_downloads, image_
 
 if __name__ == '__main__':
 
-    download_photo_preview_by_id('75520997', 'test_downloads', 'renamed_jpeg_image.jpg')
+    download_photo_preview_by_id('73669467', 'test_downloads', 'October_best_picture.jpg')
