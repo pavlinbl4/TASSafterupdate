@@ -5,6 +5,7 @@
 
 from pathlib import Path
 from tkinter import filedialog
+from typing import Optional, Dict
 
 from loguru import logger
 
@@ -14,43 +15,63 @@ from work_with_tass_sales_report.write_to_xlsx import write_to_main_file
 from work_with_tass_sales_report.data_from_report import get_info_from_report
 from work_with_tass_sales_report.extract_dict_from_xlsx_report import report_from_tass_xlsx_file
 
-
-icloud_folder = Path().home() / 'Library/Mobile Documents/com~apple~CloudDocs/'
-main_report = f'{icloud_folder}/TASS/all_years_report.xlsx'
+# Константы
+ICLOUD_FOLDER = Path.home() / 'Library/Mobile Documents/com~apple~CloudDocs'
+MAIN_REPORT = ICLOUD_FOLDER / 'TASS/all_years_report.xlsx'
 
 
 def tass_sales():
-    path_to_report_file = filedialog.askopenfile().name
+    """Главная функция обработки отчета ТАСС."""
+    try:
+        file_dialog = filedialog.askopenfile()
+        if not file_dialog:
+            logger.error("Файл не выбран.")
+            return
 
-    # check file extension
-    file_extension = Path(path_to_report_file).suffix
+        path_to_report_file = file_dialog.name
 
-    mail_report = extract_mail_report(file_extension, path_to_report_file)
-    # mail_report -  dict with index row number, value - list from columns date
-    # logger.info(f"{mail_report = }")
+        # Проверяем расширение файла
+        file_extension = Path(path_to_report_file).suffix.lower()
+        logger.info(f"Выбран файл: {path_to_report_file}, расширение: {file_extension}")
 
-    # get date from report file
-    report_date = get_report_date(mail_report, file_extension)
-    logger.info(report_date)
+        mail_report = extract_mail_report(file_extension, path_to_report_file)
+        if not mail_report:
+            logger.error("Не удалось обработать файл отчета. Проверьте формат.")
+            return
 
-    # create dict with images id and sales information
-    photos_report = get_info_from_report(mail_report, file_extension)
+        # Получаем дату из отчета
+        report_date = get_report_date(mail_report, file_extension)
+        logger.info(f"Дата отчета: {report_date}")
 
-    write_to_main_file(photos_report, main_report, report_date)
+        # Формируем словарь с данными о продажах
+        photos_report = get_info_from_report(mail_report, file_extension)
+        logger.debug(f"Сформирован отчет о продажах: {photos_report}")
 
-    get_preview_mail_report(photos_report, report_date)
+        # Записываем в основной файл
+        write_to_main_file(photos_report, MAIN_REPORT, report_date)
+
+        # Скачиваем превью
+        get_preview_mail_report(photos_report, report_date)
+
+        logger.info("Обработка отчета завершена успешно.")
+
+    except Exception as e:
+        logger.exception(f"Ошибка при обработке отчета: {e}")
 
 
-# check file extension and extract data from suitable file
-def extract_mail_report(file_extension: str, path_to_report_file: str) -> dict:
-    mail_report = None
-    if file_extension == '.html':
-        mail_report = report_from_tass_mail(path_to_report_file)
-    elif file_extension == '.xlsx':
-        mail_report = report_from_tass_xlsx_file(path_to_report_file)
-    else:
-        print("wrong report file type")
-    return mail_report
+def extract_mail_report(file_extension: str, path_to_report_file: str) -> Optional[Dict]:
+    """Извлечение данных из файла отчета в зависимости от расширения."""
+    try:
+        if file_extension == '.html':
+            return report_from_tass_mail(path_to_report_file)
+        elif file_extension == '.xlsx':
+            return report_from_tass_xlsx_file(path_to_report_file)
+        else:
+            logger.error(f"Неподдерживаемый тип файла: {file_extension}")
+            return None
+    except Exception as e:
+        logger.exception(f"Ошибка при извлечении данных из файла {path_to_report_file}: {e}")
+        return None
 
 
 if __name__ == '__main__':
