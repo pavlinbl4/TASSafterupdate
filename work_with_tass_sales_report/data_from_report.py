@@ -20,7 +20,7 @@ def extract_money_value_from_mail_report(file_extension, i, mail_report):
         # logger.info(f'{mail_report[i][6] = } , {type(mail_report[i][6])}')
 
         if isinstance(mail_report[i][6], (int, float)):
-            remove_spaces_and_comma_in_mail_report = mail_report[i][6].replace(' ', '')
+            remove_spaces_and_comma_in_mail_report = str(mail_report[i][6]).replace(' ', '')
         elif isinstance(mail_report[i][6], str):
             remove_spaces_and_comma_in_mail_report = mail_report[i][6].replace(' ', '').replace(',', '.').replace('\xa0','')
 
