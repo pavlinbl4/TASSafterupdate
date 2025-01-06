@@ -34,7 +34,7 @@ def download_photo_preview_by_id(photo_id: str, picture_folder_downloads: str, i
         )
 
         # Поиск элемента изображения по селектору
-        picture_element = driver.find_element(By.CSS_SELECTOR, f"img.thumb-{photo_id}")
+        picture_element = driver.find_element(By.CSS_SELECTOR, f"img.thumb{photo_id}")
         picture_url = picture_element.get_attribute("src")
 
         # Загрузка изображения через requests
