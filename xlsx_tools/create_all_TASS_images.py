@@ -22,9 +22,9 @@ def create_xlsx(report_folder, file_name):
         ws = wb.create_sheet(today)  # добавляю новую таблицу
         create_columns_names(ws)
     else:
-        wb = Workbook()  # если файда еще нет
-        ws = wb.active  # если файда еще нет
-        ws.title = today  # если файда еще нет
+        wb = Workbook()  # если файла еще нет
+        ws = wb.active  # если файла еще нет
+        ws.title = today  # если файла еще нет
         create_columns_names(ws)
 
     ws.column_dimensions['A'].width = 5
@@ -35,8 +35,3 @@ def create_xlsx(report_folder, file_name):
     wb.save(file_name)
     # wb.close()
     return ws, wb
-
-
-if __name__ == '__main__':
-    report_folder = make_documents_subfolder('TASS/Tass_data')
-    print(create_xlsx(report_folder, 'TASS_photo'))
