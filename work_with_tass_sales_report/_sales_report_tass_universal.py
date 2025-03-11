@@ -16,9 +16,9 @@ from work_with_tass_sales_report.data_from_report import get_info_from_report
 from work_with_tass_sales_report.extract_dict_from_xlsx_report import report_from_tass_xlsx_file
 
 # Константы
-ICLOUD_FOLDER = Path.home() / 'Library/Mobile Documents/com~apple~CloudDocs'
+ICLOUD_FOLDER = Path.home() / 'Library/Mobile Documents/com~apple~CloudDocs/Documents'
 MAIN_REPORT = ICLOUD_FOLDER / 'TASS/all_years_report.xlsx'
-
+"""/Users/evgeniy/Library/Mobile Documents/com~apple~CloudDocs/Documents"""
 
 def tass_sales():
     """Главная функция обработки отчета ТАСС."""
