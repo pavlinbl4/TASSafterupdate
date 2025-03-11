@@ -1,4 +1,5 @@
 import time
+from loguru import logger
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -20,6 +21,7 @@ def first_enter(search_word):
     search_input.clear()
     search_input.send_keys(search_word)
     search_input.send_keys(Keys.ENTER)
+    logger.debug(driver.current_url)
     return driver
 
 
