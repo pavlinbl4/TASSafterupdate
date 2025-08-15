@@ -9,6 +9,7 @@ from typing import Optional, Dict
 
 from loguru import logger
 
+from core.config_loader import ConfigLoader
 from work_with_tass_sales_report.pars_tass_mail import report_from_tass_mail, get_report_date
 from work_with_tass_sales_report.prevue_downloader import get_preview_mail_report
 from work_with_tass_sales_report.write_to_xlsx import write_to_main_file
@@ -16,9 +17,11 @@ from work_with_tass_sales_report.data_from_report import get_info_from_report
 from work_with_tass_sales_report.extract_dict_from_xlsx_report import report_from_tass_xlsx_file
 
 # Константы
-ICLOUD_FOLDER = Path.home() / 'Library/Mobile Documents/com~apple~CloudDocs/Documents'
+config = ConfigLoader.load("TASS")
+ICLOUD_FOLDER = Path.home() / config['ICLOUD_FOLDER']
 MAIN_REPORT = ICLOUD_FOLDER / 'TASS/all_years_report.xlsx'
-"""/Users/evgeniy/Library/Mobile Documents/com~apple~CloudDocs/Documents"""
+
+
 
 def tass_sales():
     """Главная функция обработки отчета ТАСС."""
@@ -29,10 +32,11 @@ def tass_sales():
             return
 
         path_to_report_file = file_dialog.name
+        # path_to_report_file = '/Users/evgeniy/Downloads/Pavlenko Evgeniy Valentinovich. Otchet dlya FL ot 11.06.2025.xlsx'
 
         # Проверяем расширение файла
         file_extension = Path(path_to_report_file).suffix.lower()
-        logger.info(f"Выбран файл: {path_to_report_file}, расширение: {file_extension}")
+        logger.info(f"Выбран файл: {path_to_report_file},\n расширение: {file_extension}")
 
         mail_report = extract_mail_report(file_extension, path_to_report_file)
         if not mail_report:
@@ -49,8 +53,10 @@ def tass_sales():
 
         # Записываем в основной файл
         write_to_main_file(photos_report, MAIN_REPORT, report_date)
+        logger.info("Report added to main file")
 
         # Скачиваем превью
+        logger.info("Start to download preview")
         get_preview_mail_report(photos_report, report_date)
 
         logger.info("Обработка отчета завершена успешно.")
@@ -72,7 +78,6 @@ def extract_mail_report(file_extension: str, path_to_report_file: str) -> Option
     except Exception as e:
         logger.exception(f"Ошибка при извлечении данных из файла {path_to_report_file}: {e}")
         return None
-
 
 if __name__ == '__main__':
     tass_sales()
