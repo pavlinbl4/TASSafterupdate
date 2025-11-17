@@ -15,11 +15,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 from loguru import logger
+
 # Константы
 config = ConfigLoader.load("TASS")
 logger.info(config["TASS_URL"])
-
-
 
 
 def download_photo_preview_by_id(photo_id: str, picture_folder_downloads: str, image_file_name=None):
@@ -67,5 +66,4 @@ def download_photo_preview_by_id(photo_id: str, picture_folder_downloads: str, i
 
 
 if __name__ == '__main__':
-
     download_photo_preview_by_id('85640996', 'test_downloads', 'October_best_picture.jpg')
