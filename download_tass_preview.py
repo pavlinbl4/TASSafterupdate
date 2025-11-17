@@ -21,6 +21,7 @@ logger.info(config["TASS_URL"])
 
 
 
+
 def download_photo_preview_by_id(photo_id: str, picture_folder_downloads: str, image_file_name=None):
     # Установка имени файла по умолчанию
     image_file_name = image_file_name if image_file_name else f"{photo_id}.jpg"
@@ -35,6 +36,7 @@ def download_photo_preview_by_id(photo_id: str, picture_folder_downloads: str, i
 
     try:
         # Открытие страницы с фотографией
+        logger.debug(f'{config["TASS_URL"]}/asset/fullTextSearch/search/{photo_id}/page/1')
         driver.get(f'{config["TASS_URL"]}/asset/fullTextSearch/search/{photo_id}/page/1')
         WebDriverWait(driver, 10).until(
             ec.presence_of_element_located((By.ID, "userrequest"))
@@ -43,9 +45,10 @@ def download_photo_preview_by_id(photo_id: str, picture_folder_downloads: str, i
         # Поиск элемента изображения по селектору
         picture_element = driver.find_element(By.CSS_SELECTOR, f"img.thumb{photo_id}")
         picture_url = picture_element.get_attribute("src")
+        logger.info(f"{picture_url = }")
 
         # Загрузка изображения через requests
-        image_response = requests.get(picture_url)
+        image_response = requests.get(picture_url, headers=config["headers"])
         if image_response.status_code != 200:
             raise Exception(f"Failed to download image. Status code: {image_response.status_code}")
 
@@ -63,6 +66,6 @@ def download_photo_preview_by_id(photo_id: str, picture_folder_downloads: str, i
         driver.quit()
 
 
-# if __name__ == '__main__':
-#
-#     download_photo_preview_by_id('73669467', 'test_downloads', 'October_best_picture.jpg')
+if __name__ == '__main__':
+
+    download_photo_preview_by_id('85640996', 'test_downloads', 'October_best_picture.jpg')
