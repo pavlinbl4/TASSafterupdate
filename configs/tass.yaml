@@ -1,0 +1,30 @@
+#site: "TASS"
+
+ICLOUD_FOLDER: 'Library/Mobile Documents/com~apple~CloudDocs/Documents'
+TASS_URL: 'https://www.tassphoto.com/ru'
+
+headers: {
+  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:145.0) Gecko/20100101 Firefox/145.0',
+  'Accept': 'application/json, text/javascript, */*; q=0.01',
+  'Accept-Language': 'en,en-US;q=0.5',
+  # 'Accept-Encoding': 'gzip, deflate, br, zstd',
+  'X-Requested-With': 'XMLHttpRequest',
+  'Referer': 'https://www.tassphoto.com/',
+  'DNT': '1',
+  'Sec-GPC': '1',
+  'Connection': 'keep-alive',
+  # 'Cookie': 'spid=1761853733617_973cb10636b7a378ae2e2e0d9292862c_rcxatbgkdmha8onj; uiPrefs=a%3A4%3A%7Bs%3A21%3A%22isBottomLightboxShown%22%3Bb%3A0%3Bs%3A23%3A%22isLayoutLeftColumnShown%22%3Bb%3A1%3Bs%3A24%3A%22isLayoutRightColumnShown%22%3Bb%3A0%3Bs%3A50%3A%22pagination_asset_fullTextSearch_nb_thumbs_per_page%22%3Bs%3A3%3A%22200%22%3B%7D; IUSR_GUEST_savedComboSearchParams=a%3A11%3A%7Bs%3A15%3A%22selected_topics%22%3Ba%3A0%3A%7B%7Ds%3A13%3A%22selected_date%22%3Bs%3A0%3A%22%22%3Bs%3A22%3A%22selected_dateTakenFrom%22%3Bs%3A0%3A%22%22%3Bs%3A20%3A%22selected_dateTakenTo%22%3Bs%3A0%3A%22%22%3Bs%3A16%3A%22selected_regions%22%3Ba%3A0%3A%7B%7Ds%3A15%3A%22selected_stocks%22%3Ba%3A0%3A%7B%7Ds%3A21%3A%22selected_photographer%22%3Bs%3A0%3A%22%22%3Bs%3A6%3A%22search%22%3Bs%3A8%3A%2285640996%22%3Bs%3A20%3A%22selected_orientation%22%3Bs%3A3%3A%22all%22%3Bs%3A17%3A%22selected_doctypes%22%3Ba%3A0%3A%7B%7Ds%3A12%3A%22selected_ref%22%3Bs%3A0%3A%22%22%3B%7D; IUSR_GUEST_savedSearchParams=a%3A1%3A%7Bs%3A6%3A%22search%22%3Bs%3A8%3A%2285640996%22%3B%7D; PHPSESSID=9imn26ed2m9bjlrmakcqavf0c5',
+  'Sec-Fetch-Dest': 'empty',
+  'Sec-Fetch-Mode': 'cors',
+  'Sec-Fetch-Site': 'same-origin',
+
+}
+
+
+
+
+
+photographer_name: "Валентин Антонов"
+log_file: "/path/to/logfile.log"
+
+# /Users/evgeniy/Library/Mobile Documents/com~apple~CloudDocs/Documents/TASS/all_years_report.xlsx
